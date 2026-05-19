@@ -7,6 +7,8 @@ import {
   fetchProductIdsWithAdditionalCategory,
   productsInCategoryOrFilter,
 } from '@/lib/supabase/productCategories'
+import { getCategoryBrandCounts } from '@/lib/store/category-counts'
+import { CategoryBrandSidebar } from '@/components/store/categories/CategoryBrandSidebar'
 import { ProductCard } from '@/components/store/ProductCard'
 
 interface Props {
@@ -49,12 +51,15 @@ export default async function CategoriaPage({ params, searchParams }: Props) {
 
   if (!category) notFound()
 
-  // Fetch brands for filter
   const { data: brands } = await supabase
     .from('brands')
     .select('id, name, slug')
     .eq('is_active', true)
     .order('sort_order')
+
+  const brandList = brands ?? []
+  const { total: totalProductCount, brands: brandsWithCounts } =
+    await getCategoryBrandCounts(supabase, category.id, brandList)
 
   const additionalProductIds = await fetchProductIdsWithAdditionalCategory(
     supabase,
@@ -65,7 +70,7 @@ export default async function CategoriaPage({ params, searchParams }: Props) {
   let productQuery = supabase
     .from('products')
     .select(
-      'id, name, slug, price, compare_at_price, primary_image_url, short_description, brand:brands!inner(name, slug)',
+      'id, name, slug, price, compare_at_price, primary_image_url, short_description, brand:brands!inner(name, slug), category:categories!category_id(name, slug)',
     )
     .eq('is_active', true)
     .order('created_at', { ascending: false })
@@ -76,85 +81,103 @@ export default async function CategoriaPage({ params, searchParams }: Props) {
       : productQuery.or(catFilter.or)
 
   if (marca) {
-    const brandMatch = (brands ?? []).find((b) => b.slug === marca)
+    const brandMatch = brandList.find((b) => b.slug === marca)
     if (brandMatch) productQuery = productQuery.eq('brand_id', brandMatch.id)
   }
 
   const { data: products } = await productQuery
+  const productList = products ?? []
+  const activeBrandName = marca ? brandList.find((b) => b.slug === marca)?.name : null
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-1.5 text-xs text-stone-400 mb-8">
-        <Link href="/" className="hover:text-stone-600 transition-colors">Inicio</Link>
-        <ChevronRight size={12} />
-        <Link href="/categorias" className="hover:text-stone-600 transition-colors">Categorías</Link>
-        <ChevronRight size={12} />
-        <span className="text-stone-700 font-medium">{category.name}</span>
+    <article className="mx-auto max-w-7xl px-6 py-10 md:px-8 md:py-12">
+      <nav
+        aria-label="Ruta de navegación"
+        className="mb-10 flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant md:mb-12"
+      >
+        <Link href="/" className="transition-colors hover:text-on-surface">
+          Inicio
+        </Link>
+        <ChevronRight size={12} className="shrink-0" aria-hidden />
+        <Link href="/categorias" className="transition-colors hover:text-on-surface">
+          Categorías
+        </Link>
+        <ChevronRight size={12} className="shrink-0" aria-hidden />
+        <span className="font-bold text-on-surface">{category.name}</span>
       </nav>
 
-      <div className="mb-10">
-        <p className="text-xs font-semibold uppercase tracking-widest text-rose-500 mb-1">Categoría</p>
-        <h1 className="text-3xl font-bold text-stone-900">{category.name}</h1>
-        {category.description && (
-          <p className="mt-2 text-stone-500 text-sm max-w-xl leading-relaxed">{category.description}</p>
-        )}
-      </div>
-
-      {/* Brand filter */}
-      {(brands ?? []).length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-8">
-          <Link
-            href={`/categorias/${slug}`}
-            className={[
-              'rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
-              !marca
-                ? 'bg-stone-900 text-white'
-                : 'border border-stone-200 text-stone-600 hover:border-stone-300 hover:bg-stone-50',
-            ].join(' ')}
-          >
-            Todas las marcas
-          </Link>
-          {(brands ?? []).map((b) => (
-            <Link
-              key={b.id}
-              href={`/categorias/${slug}?marca=${b.slug}`}
-              className={[
-                'rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
-                marca === b.slug
-                  ? 'bg-stone-900 text-white'
-                  : 'border border-stone-200 text-stone-600 hover:border-stone-300 hover:bg-stone-50',
-              ].join(' ')}
-            >
-              {b.name}
-            </Link>
-          ))}
+      <header className="mb-12 grid grid-cols-1 items-end gap-10 border-b border-zinc-100 pb-12 lg:mb-16 lg:grid-cols-2 lg:gap-16 lg:pb-16">
+        <div>
+          <h1 className="font-serif text-3xl leading-tight text-on-surface md:text-4xl lg:text-5xl">
+            {category.name}
+          </h1>
+          {category.description && (
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-on-surface-variant">
+              {category.description}
+            </p>
+          )}
         </div>
-      )}
-
-      {(products ?? []).length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-stone-400">
-          <p className="text-base font-medium">Sin productos disponibles</p>
-          <p className="text-sm mt-1">Intenta con otra marca o vuelve pronto.</p>
-        </div>
-      ) : (
-        <>
-          <p className="text-sm text-stone-400 mb-4">
-            {products!.length} {products!.length === 1 ? 'producto' : 'productos'}
+        <aside className="flex flex-col items-start gap-2 lg:items-end">
+          <p className="text-xs font-semibold uppercase tracking-widest text-on-surface-variant">
+            {totalProductCount}{' '}
+            {totalProductCount === 1 ? 'producto en catálogo' : 'productos en catálogo'}
           </p>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {products!.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={{
-                  ...product,
-                  brand: product.brand as unknown as { name: string; slug: string },
-                }}
-              />
-            ))}
+          {brandsWithCounts.length > 0 && (
+            <p className="text-[10px] uppercase tracking-widest text-zinc-400">
+              {brandsWithCounts.length}{' '}
+              {brandsWithCounts.length === 1 ? 'marca disponible' : 'marcas disponibles'}
+            </p>
+          )}
+        </aside>
+      </header>
+
+      <div className="flex flex-col gap-10 lg:flex-row lg:gap-12">
+        <CategoryBrandSidebar
+          categorySlug={slug}
+          brands={brandsWithCounts}
+          totalCount={totalProductCount}
+          activeBrand={marca ?? null}
+        />
+
+        <section className="min-w-0 flex-1">
+          <div className="mb-8 flex flex-col gap-2 border-b border-zinc-100 pb-6 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-on-surface-variant">
+              {productList.length}{' '}
+              {productList.length === 1 ? 'resultado' : 'resultados'}
+              {activeBrandName ? (
+                <span className="text-on-surface"> · {activeBrandName}</span>
+              ) : null}
+            </p>
           </div>
-        </>
-      )}
-    </div>
+
+          {productList.length === 0 ? (
+            <p className="py-20 text-center text-sm text-zinc-400">
+              Sin productos en esta categoría.{' '}
+              <Link href={`/categorias/${slug}`} className="underline hover:text-on-surface">
+                Ver todos
+              </Link>
+            </p>
+          ) : (
+            <ul className="grid list-none grid-cols-2 gap-x-6 gap-y-12 p-0 md:grid-cols-3 md:gap-x-6">
+              {productList.map((product) => (
+                <li key={product.id}>
+                  <ProductCard
+                    variant="editorial"
+                    product={{
+                      ...product,
+                      brand: product.brand as unknown as { name: string; slug: string },
+                      category: product.category as unknown as {
+                        name: string
+                        slug: string
+                      } | null,
+                    }}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </article>
   )
 }

@@ -4,7 +4,7 @@ import { BrandCard } from '@/components/store/BrandCard'
 
 export const metadata: Metadata = {
   title: 'Marcas',
-  description: 'Explora todas nuestras marcas de productos de belleza, bienestar y hogar.',
+  description: 'Explora nuestras marcas de productos de belleza, bienestar y hogar.',
 }
 
 export const revalidate = 60
@@ -12,37 +12,51 @@ export const revalidate = 60
 export default async function MarcasPage() {
   const supabase = await createClient()
 
-  const { data: brands } = await supabase
-    .from('brands')
-    .select('id, name, slug, description')
-    .eq('is_active', true)
-    .order('sort_order')
+  const [{ data: brands }, { data: productRows }] = await Promise.all([
+    supabase
+      .from('brands')
+      .select('id, name, slug, description, logo_url')
+      .eq('is_active', true)
+      .order('sort_order'),
+    supabase.from('products').select('brand_id').eq('is_active', true),
+  ])
 
   const brandList = brands ?? []
+  const countByBrand: Record<string, number> = {}
+  for (const row of productRows ?? []) {
+    countByBrand[row.brand_id] = (countByBrand[row.brand_id] ?? 0) + 1
+  }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header */}
-      <div className="mb-10">
-        <p className="text-xs font-semibold uppercase tracking-widest text-rose-500 mb-1">Catálogo</p>
-        <h1 className="text-3xl font-bold text-stone-900">Nuestras marcas</h1>
-        <p className="mt-2 text-stone-500 text-sm max-w-xl">
-          Marcas seleccionadas con los mejores estándares de calidad.
+    <article className="mx-auto max-w-7xl px-6 py-12 md:px-8 md:py-16">
+      <header className="mb-6 border-b border-zinc-100 pb-10 md:mb-16 md:pb-14">
+        <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+          Catálogo
+        </span>
+        <h1 className="font-serif text-3xl text-on-surface md:text-4xl lg:text-[2.75rem] lg:leading-tight">
+          Nuestras marcas
+        </h1>
+        <p className="mt-4 max-w-xl text-base leading-relaxed text-on-surface-variant">
+          Marcas seleccionadas con los mejores estándares de calidad. Cada una curada para tu bienestar
+          y el de tu hogar.
         </p>
-      </div>
+      </header>
 
       {brandList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-stone-400">
-          <p className="text-lg font-medium">Próximamente</p>
-          <p className="text-sm mt-1">Estamos preparando nuestro catálogo.</p>
-        </div>
+        <p className="py-24 text-center text-sm text-zinc-400">Próximamente</p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {brandList.map((brand) => (
-            <BrandCard key={brand.id} brand={brand} />
+            <li key={brand.id}>
+              <BrandCard
+                variant="editorial"
+                brand={brand}
+                productCount={countByBrand[brand.id] ?? 0}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
-    </div>
+    </article>
   )
 }

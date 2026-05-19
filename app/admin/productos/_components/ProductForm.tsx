@@ -12,7 +12,7 @@ import { Alert } from '@/components/ui/Alert'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { FormSection } from '@/components/admin/FormSection'
 import { ImageUploader } from '@/components/admin/ImageUploader'
-import { generateSlug } from '@/lib/utils'
+import { formatCurrency, generateSlug } from '@/lib/utils'
 import { replaceProductCategoryExtras } from '@/lib/supabase/productCategories'
 import type { Brand, Category, Product } from '@/types/database'
 import { Trash2 } from 'lucide-react'
@@ -44,10 +44,20 @@ export function ProductForm({
   )
   const [description, setDescription] = useState(product?.description ?? '')
   const [sku, setSku] = useState(product?.sku ?? '')
-  const [price, setPrice] = useState(product?.price?.toString() ?? '')
-  const [compareAtPrice, setCompareAtPrice] = useState(
-    product?.compare_at_price?.toString() ?? '',
-  )
+
+  const initialHasDiscount =
+    product?.compare_at_price != null &&
+    product.compare_at_price > product.price
+  const [normalPrice, setNormalPrice] = useState(() => {
+    if (!product) return ''
+    if (initialHasDiscount) return product.compare_at_price!.toString()
+    return product.price.toString()
+  })
+  const [hasDiscount, setHasDiscount] = useState(initialHasDiscount)
+  const [discountedPrice, setDiscountedPrice] = useState(() => {
+    if (!product || !initialHasDiscount) return ''
+    return product.price.toString()
+  })
   const [primaryImageUrl, setPrimaryImageUrl] = useState(
     product?.primary_image_url ?? '',
   )
@@ -122,17 +132,26 @@ export function ProductForm({
       return
     }
 
-    const priceNum = parseFloat(price)
-    const compareAtNum = compareAtPrice ? parseFloat(compareAtPrice) : null
+    const normalNum = parseFloat(normalPrice)
+    const discountedNum = discountedPrice ? parseFloat(discountedPrice) : null
 
-    if (isNaN(priceNum) || priceNum < 0) {
-      setError('El precio debe ser un número válido mayor o igual a 0.')
+    if (isNaN(normalNum) || normalNum < 0) {
+      setError('El precio normal debe ser un número válido mayor o igual a 0.')
       return
     }
-    if (compareAtNum !== null && compareAtNum < priceNum) {
-      setError('El precio de lista debe ser mayor o igual al precio de venta.')
-      return
+    if (hasDiscount) {
+      if (discountedNum === null || isNaN(discountedNum) || discountedNum < 0) {
+        setError('Indica el precio con descuento o desactiva el descuento.')
+        return
+      }
+      if (discountedNum >= normalNum) {
+        setError('El precio con descuento debe ser menor al precio normal.')
+        return
+      }
     }
+
+    const salePrice = hasDiscount && discountedNum !== null ? discountedNum : normalNum
+    const compareAtNum = hasDiscount && discountedNum !== null ? normalNum : null
 
     setLoading(true)
 
@@ -144,7 +163,7 @@ export function ProductForm({
       short_description: shortDescription.trim() || null,
       description: description.trim() || null,
       sku: sku.trim() || null,
-      price: priceNum,
+      price: salePrice,
       compare_at_price: compareAtNum,
       primary_image_url: primaryImageUrl.trim() || null,
       is_active: isActive,
@@ -375,33 +394,70 @@ export function ProductForm({
 
         <FormSection
           title="Precios"
-          description="Precio de venta vigente y precio de lista (tachado) opcional."
+          description="Define el precio habitual y, si aplica, un precio rebajado. El cliente siempre ve el precio de venta final."
         >
-          <div className="grid grid-cols-2 gap-4">
+          <Input
+            id="normal_price"
+            type="number"
+            label="Precio normal"
+            value={normalPrice}
+            onChange={(e) => setNormalPrice(e.target.value)}
+            required
+            min={0}
+            step="0.01"
+            placeholder="0.00"
+            hint="Precio habitual del producto sin promoción."
+          />
+
+          <Toggle
+            id="has_discount"
+            checked={hasDiscount}
+            onChange={(checked) => {
+              setHasDiscount(checked)
+              if (!checked) setDiscountedPrice('')
+            }}
+            label="Este producto tiene descuento"
+          />
+
+          {hasDiscount && (
             <Input
-              id="price"
+              id="discounted_price"
               type="number"
-              label="Precio de venta"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              label="Precio con descuento"
+              value={discountedPrice}
+              onChange={(e) => setDiscountedPrice(e.target.value)}
               required
               min={0}
               step="0.01"
               placeholder="0.00"
-              hint="Precio que paga el cliente."
+              hint="Debe ser menor al precio normal. Es lo que paga el cliente."
             />
-            <Input
-              id="compare_at_price"
-              type="number"
-              label="Precio de lista (opcional)"
-              value={compareAtPrice}
-              onChange={(e) => setCompareAtPrice(e.target.value)}
-              min={0}
-              step="0.01"
-              placeholder="0.00"
-              hint="Se muestra tachado si es mayor al precio."
-            />
-          </div>
+          )}
+
+          {(() => {
+            const normalNum = parseFloat(normalPrice)
+            if (isNaN(normalNum)) return null
+            const discountedNum = parseFloat(discountedPrice)
+            const showDiscount =
+              hasDiscount &&
+              discountedPrice !== '' &&
+              !isNaN(discountedNum) &&
+              discountedNum < normalNum
+            const salePrice = showDiscount ? discountedNum : normalNum
+            return (
+              <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
+                <p className="font-medium text-slate-700">Precio de venta (en tienda)</p>
+                <p className="mt-1 text-lg font-semibold text-slate-900">
+                  {formatCurrency(salePrice)}
+                </p>
+                {showDiscount && (
+                  <p className="mt-0.5 text-slate-500 line-through">
+                    {formatCurrency(normalNum)}
+                  </p>
+                )}
+              </div>
+            )
+          })()}
         </FormSection>
 
         <FormSection

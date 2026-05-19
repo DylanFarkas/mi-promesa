@@ -28,77 +28,87 @@ export function StoreHeader() {
   const navLinks = [
     { href: '/marcas', label: 'Marcas' },
     { href: '/categorias', label: 'Categorías' },
+    { href: '/#novedades', label: 'Novedades' },
     { href: '/nosotros', label: 'Nosotros' },
   ]
 
-  const isActive = (href: string) => pathname.startsWith(href)
+  const isActive = (href: string) => {
+    if (href === '/#novedades') return pathname === '/'
+    return pathname.startsWith(href.replace('/#novedades', ''))
+  }
 
   return (
     <>
       <header
         className={[
-          'sticky top-0 z-30 w-full transition-all duration-200',
+          'sticky top-0 z-30 w-full border-b transition-all duration-200',
           scrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-stone-100'
-            : 'bg-white border-b border-stone-100',
+            ? 'border-zinc-100 bg-white/95 shadow-sm backdrop-blur-md'
+            : 'border-zinc-100 bg-white',
         ].join(' ')}
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between gap-4">
-            {/* Logo */}
-            <Link
-              href="/"
-              className="shrink-0 text-xl font-bold tracking-tight text-stone-900 hover:text-rose-600 transition-colors"
-            >
-              Mi Promesa
-            </Link>
+        <div className="mx-auto max-w-7xl px-6 md:px-8">
+          <div className="flex h-16 items-center justify-between gap-4 md:h-20">
+            <div className="flex items-center gap-8 md:gap-12">
+              <Link
+                href="/"
+                className="shrink-0 font-[family-name:var(--font-noto-serif),Georgia,serif] text-sm font-semibold uppercase tracking-[0.2em] text-zinc-900 md:text-base"
+              >
+                Mi Promesa
+              </Link>
 
-            {/* Desktop nav */}
-            <nav className="hidden md:flex items-center gap-6">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={[
-                    'text-sm font-medium transition-colors',
-                    isActive(link.href)
-                      ? 'text-rose-600'
-                      : 'text-stone-600 hover:text-stone-900',
-                  ].join(' ')}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
+              <nav className="hidden items-center gap-8 md:flex">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={[
+                      'font-[family-name:var(--font-noto-serif),Georgia,serif] text-sm uppercase tracking-tight transition-colors duration-300',
+                      isActive(link.href)
+                        ? 'border-b-2 border-zinc-900 pb-1 text-zinc-900'
+                        : 'text-zinc-500 hover:text-zinc-900',
+                    ].join(' ')}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-4 md:gap-6">
               <Link
                 href="/buscar"
-                className="flex h-9 w-9 items-center justify-center rounded-full text-stone-500 hover:bg-stone-100 transition-colors"
+                className="hidden items-center gap-2 rounded-full bg-white px-4 py-2 transition-all hover:bg-[#e8e8e8] lg:flex"
+                aria-label="Buscar"
+              >
+                <Search size={16} className="text-zinc-400" />
+                <span className="text-sm text-zinc-400">Buscar...</span>
+              </Link>
+
+              <Link
+                href="/buscar"
+                className="flex h-9 w-9 items-center justify-center text-zinc-900 lg:hidden"
                 aria-label="Buscar"
               >
                 <Search size={18} />
               </Link>
 
-              {/* Cart button */}
               <button
                 onClick={() => setCartOpen(true)}
-                className="relative flex h-9 w-9 items-center justify-center rounded-full text-stone-500 hover:bg-stone-100 transition-colors"
+                className="relative flex h-9 w-9 items-center justify-center text-zinc-900 transition-transform active:scale-95"
                 aria-label="Abrir carrito"
               >
                 <ShoppingBag size={18} />
                 {hasHydrated && totalItems() > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white leading-none">
+                  <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-on-surface px-1 text-[10px] font-bold text-white">
                     {totalItems() > 9 ? '9+' : totalItems()}
                   </span>
                 )}
               </button>
 
-              {/* Mobile menu toggle */}
               <button
                 onClick={() => setMobileMenuOpen((v) => !v)}
-                className="flex h-9 w-9 items-center justify-center rounded-full text-stone-500 hover:bg-stone-100 transition-colors md:hidden"
+                className="flex h-9 w-9 items-center justify-center text-zinc-900 md:hidden"
                 aria-label="Menú"
               >
                 {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
@@ -107,19 +117,18 @@ export function StoreHeader() {
           </div>
         </div>
 
-        {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="border-t border-stone-100 bg-white px-4 pb-4 md:hidden">
+          <div className="border-t border-zinc-100 bg-white px-6 pb-4 md:hidden">
             <nav className="flex flex-col gap-1 pt-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={[
-                    'rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                    'rounded px-3 py-2.5 font-[family-name:var(--font-noto-serif),Georgia,serif] text-sm uppercase tracking-tight transition-colors',
                     isActive(link.href)
-                      ? 'bg-rose-50 text-rose-600'
-                      : 'text-stone-700 hover:bg-stone-50',
+                      ? 'bg-surface-container-low text-zinc-900'
+                      : 'text-zinc-600 hover:bg-surface',
                   ].join(' ')}
                 >
                   {link.label}

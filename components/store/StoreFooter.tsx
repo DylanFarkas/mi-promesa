@@ -1,76 +1,108 @@
 import Link from 'next/link'
-import { Star, Globe, MessageCircle } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 export function StoreFooter() {
   return (
-    <footer className="bg-stone-900 text-stone-300">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand */}
-          <div className="lg:col-span-2">
-            <p className="text-xl font-bold text-white tracking-tight mb-3">Mi Promesa</p>
-            <p className="text-sm leading-relaxed max-w-xs text-stone-400">
-              Distribuidora de productos de belleza, bienestar y hogar. Calidad garantizada con atención personalizada.
+    <footer className="mt-12 border-t border-zinc-200 bg-zinc-50">
+      <div className="mx-auto max-w-7xl px-6 py-14 md:px-8 md:py-16">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
+          <div className="space-y-6 md:col-span-1">
+            <span className="block font-[family-name:var(--font-noto-serif),Georgia,serif] text-xl font-light tracking-[0.3em] text-zinc-900">
+              Mi Promesa
+            </span>
+            <p className="max-w-xs font-[family-name:var(--font-noto-serif),Georgia,serif] text-xs uppercase leading-relaxed tracking-widest text-zinc-400">
+              Un destino para quienes valoran la calidad silenciosa y la excelencia curada.
             </p>
-            <div className="flex gap-3 mt-6">
-              <a
-                href="#"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-700 text-stone-400 hover:border-rose-500 hover:text-rose-400 transition-colors"
-                aria-label="Instagram"
-              >
-                <Star size={16} />
-              </a>
-              <a
-                href="#"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-700 text-stone-400 hover:border-rose-500 hover:text-rose-400 transition-colors"
-                aria-label="Sitio web"
-              >
-                <Globe size={16} />
-              </a>
-              <a
-                href="https://wa.me/521xxxxxxxxxx"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-700 text-stone-400 hover:border-green-500 hover:text-green-400 transition-colors"
-                aria-label="WhatsApp"
-              >
-                <MessageCircle size={16} />
-              </a>
-            </div>
           </div>
 
-          {/* Links */}
           <div>
-            <p className="text-sm font-semibold text-white uppercase tracking-widest mb-4">Tienda</p>
-            <ul className="space-y-2.5 text-sm">
-              <li><Link href="/marcas" className="hover:text-white transition-colors">Marcas</Link></li>
-              <li><Link href="/categorias" className="hover:text-white transition-colors">Categorías</Link></li>
-              <li><Link href="/buscar" className="hover:text-white transition-colors">Buscar</Link></li>
-              <li><Link href="/checkout" className="hover:text-white transition-colors">Carrito</Link></li>
+            <h5 className="mb-6 font-[family-name:var(--font-noto-serif),Georgia,serif] text-xs font-bold uppercase tracking-widest text-zinc-900">
+              Tienda
+            </h5>
+            <ul className="space-y-4">
+              <li>
+                <Link
+                  href="/marcas"
+                  className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-xs uppercase tracking-wide text-zinc-400 transition-colors hover:text-zinc-900"
+                >
+                  Marcas
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/categorias"
+                  className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-xs uppercase tracking-wide text-zinc-400 transition-colors hover:text-zinc-900"
+                >
+                  Categorías
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/buscar"
+                  className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-xs uppercase tracking-wide text-zinc-400 transition-colors hover:text-zinc-900"
+                >
+                  Buscar
+                </Link>
+              </li>
             </ul>
           </div>
 
           <div>
-            <p className="text-sm font-semibold text-white uppercase tracking-widest mb-4">Ayuda</p>
-            <ul className="space-y-2.5 text-sm">
-              <li><Link href="/nosotros" className="hover:text-white transition-colors">Nosotros</Link></li>
+            <h5 className="mb-6 font-[family-name:var(--font-noto-serif),Georgia,serif] text-xs font-bold uppercase tracking-widest text-zinc-900">
+              Conectar
+            </h5>
+            <ul className="space-y-4">
+              <li>
+                <Link
+                  href="/nosotros"
+                  className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-xs uppercase tracking-wide text-zinc-400 transition-colors hover:text-zinc-900"
+                >
+                  Nosotros
+                </Link>
+              </li>
               <li>
                 <a
                   href="https://wa.me/521xxxxxxxxxx"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-white transition-colors"
+                  className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-xs uppercase tracking-wide text-zinc-400 transition-colors hover:text-zinc-900"
                 >
-                  Contacto por WhatsApp
+                  WhatsApp
                 </a>
               </li>
-              <li><span className="text-stone-500 cursor-default">Política de privacidad</span></li>
             </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h5 className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-xs font-bold uppercase tracking-widest text-zinc-900">
+              Mantente curado
+            </h5>
+            <form className="flex items-center justify-between border-b border-zinc-200 pb-2">
+              <input
+                type="email"
+                placeholder="TU CORREO"
+                className="w-full border-none bg-transparent p-0 text-[10px] tracking-widest text-zinc-600 placeholder:text-zinc-300 focus:ring-0 focus:outline-none"
+                aria-label="Correo electrónico"
+              />
+              <button type="button" className="text-zinc-400" aria-label="Suscribirse">
+                <ArrowRight size={18} />
+              </button>
+            </form>
           </div>
         </div>
 
-        <div className="mt-12 border-t border-stone-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-stone-500">
-          <p>© {new Date().getFullYear()} Mi Promesa. Todos los derechos reservados.</p>
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-zinc-100 pt-8 md:flex-row">
+          <span className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-[10px] uppercase tracking-widest text-zinc-400">
+            © {new Date().getFullYear()} Mi Promesa. Curated Excellence.
+          </span>
+          <div className="flex gap-6">
+            <span className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-[10px] uppercase tracking-widest text-zinc-400">
+              Privacidad
+            </span>
+            <span className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-[10px] uppercase tracking-widest text-zinc-400">
+              Cookies
+            </span>
+          </div>
         </div>
       </div>
     </footer>

@@ -44,8 +44,8 @@ export function AddToCartButton({
       className={[
         'flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-200',
         added
-          ? 'bg-green-500 text-white'
-          : 'bg-stone-900 text-white hover:bg-rose-500',
+          ? 'bg-green-600 text-white'
+          : 'bg-on-surface text-white hover:opacity-90',
         fullWidth ? 'w-full' : '',
         className,
       ].join(' ')}
@@ -58,7 +58,7 @@ export function AddToCartButton({
       ) : (
         <>
           <ShoppingBag size={15} />
-          Agregar
+          Agregar al carrito
         </>
       )}
     </button>

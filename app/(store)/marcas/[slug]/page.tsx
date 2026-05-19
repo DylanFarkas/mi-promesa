@@ -1,12 +1,15 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ChevronRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import {
   fetchProductIdsWithAdditionalCategory,
   productsInCategoryOrFilter,
 } from '@/lib/supabase/productCategories'
+import { getBrandCategoryCounts } from '@/lib/store/brand-category-counts'
+import { BrandCategorySidebar } from '@/components/store/brands/BrandCategorySidebar'
 import { ProductCard } from '@/components/store/ProductCard'
 
 interface Props {
@@ -39,17 +42,15 @@ export default async function BrandPage({ params, searchParams }: Props) {
   const { categoria } = await searchParams
   const supabase = await createClient()
 
-  // Fetch brand
   const { data: brand } = await supabase
     .from('brands')
-    .select('id, name, slug, description')
+    .select('id, name, slug, description, logo_url')
     .eq('slug', slug)
     .eq('is_active', true)
     .single()
 
   if (!brand) notFound()
 
-  // Fetch categories for this brand
   const { data: categories } = await supabase
     .from('categories')
     .select('id, name, slug')
@@ -57,18 +58,21 @@ export default async function BrandPage({ params, searchParams }: Props) {
     .eq('is_active', true)
     .order('sort_order')
 
-  // Build product query
+  const categoryList = categories ?? []
+  const { total: totalProductCount, categories: categoriesWithCounts } =
+    await getBrandCategoryCounts(supabase, brand.id, categoryList)
+
   let productQuery = supabase
     .from('products')
     .select(
-      'id, name, slug, price, compare_at_price, primary_image_url, short_description, category_id, brand:brands!inner(name, slug)',
+      'id, name, slug, price, compare_at_price, primary_image_url, short_description, category_id, brand:brands!inner(name, slug), category:categories!category_id(name, slug)',
     )
     .eq('brand_id', brand.id)
     .eq('is_active', true)
     .order('created_at', { ascending: false })
 
   if (categoria) {
-    const cat = (categories ?? []).find((c) => c.slug === categoria)
+    const cat = categoryList.find((c) => c.slug === categoria)
     if (cat) {
       const additionalProductIds = await fetchProductIdsWithAdditionalCategory(supabase, cat.id)
       const catFilter = productsInCategoryOrFilter(cat.id, additionalProductIds)
@@ -80,82 +84,108 @@ export default async function BrandPage({ params, searchParams }: Props) {
   }
 
   const { data: products } = await productQuery
+  const productList = products ?? []
+  const activeCategoryName = categoria
+    ? categoryList.find((c) => c.slug === categoria)?.name
+    : null
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-1.5 text-xs text-stone-400 mb-8">
-        <Link href="/" className="hover:text-stone-600 transition-colors">Inicio</Link>
-        <ChevronRight size={12} />
-        <Link href="/marcas" className="hover:text-stone-600 transition-colors">Marcas</Link>
-        <ChevronRight size={12} />
-        <span className="text-stone-700 font-medium">{brand.name}</span>
+    <article className="mx-auto max-w-7xl px-6 py-10 md:px-8 md:py-12">
+      <nav
+        aria-label="Ruta de navegación"
+        className="mb-10 flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant md:mb-12"
+      >
+        <Link href="/" className="transition-colors hover:text-on-surface">
+          Inicio
+        </Link>
+        <ChevronRight size={12} className="shrink-0" aria-hidden />
+        <Link href="/marcas" className="transition-colors hover:text-on-surface">
+          Marcas
+        </Link>
+        <ChevronRight size={12} className="shrink-0" aria-hidden />
+        <span className="font-bold text-on-surface">{brand.name}</span>
       </nav>
 
-      {/* Brand header */}
-      <div className="mb-10">
-        <p className="text-xs font-semibold uppercase tracking-widest text-rose-500 mb-1">Marca</p>
-        <h1 className="text-3xl font-bold text-stone-900">{brand.name}</h1>
-        {brand.description && (
-          <p className="mt-2 text-stone-500 text-sm max-w-xl leading-relaxed">{brand.description}</p>
-        )}
-      </div>
-
-      {/* Category filters */}
-      {(categories ?? []).length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-8">
-          <Link
-            href={`/marcas/${slug}`}
-            className={[
-              'rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
-              !categoria
-                ? 'bg-stone-900 text-white'
-                : 'border border-stone-200 text-stone-600 hover:border-stone-300 hover:bg-stone-50',
-            ].join(' ')}
-          >
-            Todos
-          </Link>
-          {(categories ?? []).map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/marcas/${slug}?categoria=${cat.slug}`}
-              className={[
-                'rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
-                categoria === cat.slug
-                  ? 'bg-stone-900 text-white'
-                  : 'border border-stone-200 text-stone-600 hover:border-stone-300 hover:bg-stone-50',
-              ].join(' ')}
-            >
-              {cat.name}
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {/* Products */}
-      {(products ?? []).length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-stone-400">
-          <p className="text-base font-medium">Sin productos disponibles</p>
-          <p className="text-sm mt-1">Intenta con otra categoría o vuelve pronto.</p>
-        </div>
-      ) : (
-        <>
-          <p className="text-sm text-stone-400 mb-4">
-            {products!.length} {products!.length === 1 ? 'producto' : 'productos'}
-          </p>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {products!.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={{
-                  ...product,
-                  brand: product.brand as unknown as { name: string; slug: string },
-                }}
+      <header className="mb-12 grid grid-cols-1 items-end gap-10 border-b border-zinc-100 pb-12 lg:mb-16 lg:grid-cols-2 lg:gap-16 lg:pb-16">
+        <div>
+          {/* {brand.logo_url && (
+            <div className="mb-8 flex h-16 items-center">
+              <Image
+                src={brand.logo_url}
+                alt={`Logo de ${brand.name}`}
+                width={160}
+                height={64}
+                className="max-h-14 w-auto object-contain"
               />
-            ))}
+            </div>
+          )} */}
+          <h1 className="font-serif text-3xl leading-tight text-on-surface md:text-4xl lg:text-5xl">
+            {brand.name}
+          </h1>
+          {brand.description && (
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-on-surface-variant">
+              {brand.description}
+            </p>
+          )}
+        </div>
+        <aside className="flex flex-col items-start gap-2 lg:items-end">
+          <p className="text-xs font-semibold uppercase tracking-widest text-on-surface-variant">
+            {totalProductCount}{' '}
+            {totalProductCount === 1 ? 'producto en catálogo' : 'productos en catálogo'}
+          </p>
+          {categoryList.length > 0 && (
+            <p className="text-[10px] uppercase tracking-widest text-zinc-400">
+              {categoryList.length}{' '}
+              {categoryList.length === 1 ? 'categoría' : 'categorías'}
+            </p>
+          )}
+        </aside>
+      </header>
+
+      <div className="flex flex-col gap-10 lg:flex-row lg:gap-12">
+        <BrandCategorySidebar
+          brandSlug={slug}
+          categories={categoriesWithCounts}
+          totalCount={totalProductCount}
+          activeCategory={categoria ?? null}
+        />
+
+        <section className="min-w-0 flex-1">
+          <div className="mb-8 flex flex-col gap-2 border-b border-zinc-100 pb-6 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-on-surface-variant">
+              {productList.length}{' '}
+              {productList.length === 1 ? 'resultado' : 'resultados'}
+              {activeCategoryName ? (
+                <span className="text-on-surface"> · {activeCategoryName}</span>
+              ) : null}
+            </p>
           </div>
-        </>
-      )}
-    </div>
+
+          {productList.length === 0 ? (
+            <p className="py-20 text-center text-sm text-zinc-400">
+              Sin productos en esta categoría.{' '}
+              <Link href={`/marcas/${slug}`} className="underline hover:text-on-surface">
+                Ver todos
+              </Link>
+            </p>
+          ) : (
+            <ul className="grid list-none grid-cols-2 gap-x-6 gap-y-12 p-0 md:grid-cols-3 md:gap-x-6">
+              {productList.map((product) => (
+                <li key={product.id}>
+                  <ProductCard
+                    variant="editorial"
+                    product={{
+                      ...product,
+                      brand: product.brand as unknown as { name: string; slug: string },
+                      category: product.category as unknown as { name: string; slug: string } | null,
+                    }}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </article>
   )
 }

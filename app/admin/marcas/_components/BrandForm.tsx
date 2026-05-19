@@ -10,6 +10,7 @@ import { Toggle } from '@/components/ui/Toggle'
 import { Alert } from '@/components/ui/Alert'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { FormSection } from '@/components/admin/FormSection'
+import { ImageUploader } from '@/components/admin/ImageUploader'
 import { generateSlug } from '@/lib/utils'
 import type { Brand } from '@/types/database'
 import { Trash2 } from 'lucide-react'
@@ -26,6 +27,7 @@ export function BrandForm({ brand }: BrandFormProps) {
   const [name, setName] = useState(brand?.name ?? '')
   const [slug, setSlug] = useState(brand?.slug ?? '')
   const [description, setDescription] = useState(brand?.description ?? '')
+  const [logoUrl, setLogoUrl] = useState(brand?.logo_url ?? '')
   const [isActive, setIsActive] = useState(brand?.is_active ?? true)
   const [sortOrder, setSortOrder] = useState(brand?.sort_order ?? 0)
 
@@ -56,6 +58,7 @@ export function BrandForm({ brand }: BrandFormProps) {
       name: name.trim(),
       slug,
       description: description.trim() || null,
+      logo_url: logoUrl.trim() || null,
       is_active: isActive,
       sort_order: sortOrder,
     }
@@ -132,6 +135,19 @@ export function BrandForm({ brand }: BrandFormProps) {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Descripción breve de la marca..."
             rows={3}
+          />
+        </FormSection>
+
+        <FormSection
+          title="Logo"
+          description="Imagen que se muestra en la tienda (listado de marcas y ficha de marca)."
+        >
+          <ImageUploader
+            value={logoUrl}
+            onChange={setLogoUrl}
+            label="Logo de la marca"
+            hint="Formato cuadrado recomendado. JPG, PNG o WebP."
+            folder="distribuidora/brands"
           />
         </FormSection>
 

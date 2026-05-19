@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { countProductsInCategory } from '@/lib/store/category-counts'
+import { CategoryCard } from '@/components/store/CategoryCard'
 
 export const metadata: Metadata = {
   title: 'Categorías',
@@ -22,48 +22,64 @@ export default async function CategoriasPage() {
 
   const categoryList = categories ?? []
 
-  return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-10">
-        <p className="text-xs font-semibold uppercase tracking-widest text-rose-500 mb-1">Navegar</p>
-        <h1 className="text-3xl font-bold text-stone-900">Categorías</h1>
-        <p className="mt-2 text-stone-500 text-sm max-w-xl">
-          Explora nuestros productos organizados por tipo.
-        </p>
-      </div>
+  const categoriesWithMeta = await Promise.all(
+    categoryList.map(async (cat) => {
+      const [productCount, imageResult] = await Promise.all([
+        countProductsInCategory(supabase, cat.id),
+        supabase
+          .from('products')
+          .select('primary_image_url')
+          .eq('category_id', cat.id)
+          .eq('is_active', true)
+          .not('primary_image_url', 'is', null)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+      ])
 
-      {categoryList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 text-stone-400">
-          <p className="text-lg font-medium">Próximamente</p>
-        </div>
+      return {
+        ...cat,
+        productCount,
+        imageUrl: imageResult.data?.primary_image_url ?? null,
+      }
+    }),
+  )
+
+  return (
+    <article className="mx-auto max-w-7xl px-6 py-12 md:px-8 md:py-16">
+      <header className="mb-12 border-b border-zinc-100 pb-10 md:mb-16 md:pb-14">
+        <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+          Navegar
+        </span>
+        <h1 className="font-serif text-3xl text-on-surface md:text-4xl lg:text-[2.75rem] lg:leading-tight">
+          Categorías
+        </h1>
+        <p className="mt-4 max-w-xl text-base leading-relaxed text-on-surface-variant">
+          Explora nuestros productos organizados por tipo. Cada categoría reúne lo mejor de nuestro
+          catálogo curado.
+        </p>
+      </header>
+
+      {categoriesWithMeta.length === 0 ? (
+        <p className="py-24 text-center text-sm text-zinc-400">Próximamente</p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categoryList.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/categorias/${cat.slug}`}
-              className="group flex flex-col justify-between rounded-2xl border border-stone-100 bg-white p-6 hover:border-rose-200 hover:shadow-md transition-all duration-200 min-h-[140px]"
-            >
-              <div>
-                <h2 className="text-lg font-bold text-stone-900 group-hover:text-rose-600 transition-colors">
-                  {cat.name}
-                </h2>
-                {cat.description && (
-                  <p className="mt-1.5 text-sm text-stone-400 line-clamp-2 leading-relaxed">
-                    {cat.description}
-                  </p>
-                )}
-              </div>
-              <div className="flex justify-end mt-4">
-                <span className="flex items-center gap-1 text-xs font-semibold text-rose-500 group-hover:gap-2 transition-all">
-                  Ver productos
-                  <ArrowRight size={14} />
-                </span>
-              </div>
-            </Link>
+        <ul className="grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+          {categoriesWithMeta.map((cat) => (
+            <li key={cat.id}>
+              <CategoryCard
+                variant="editorial"
+                category={{
+                  name: cat.name,
+                  slug: cat.slug,
+                  description: cat.description,
+                  imageUrl: cat.imageUrl,
+                }}
+                productCount={cat.productCount}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
-    </div>
+    </article>
   )
 }
