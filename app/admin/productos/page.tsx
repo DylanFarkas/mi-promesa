@@ -17,7 +17,7 @@ export default async function ProductsPage() {
   const supabase = await createClient()
   const { data } = await supabase
     .from('products')
-    .select('*, brand:brands(id, name), category:categories(id, name)')
+    .select('*, brand:brands!brand_id(id, name), category:categories!category_id(id, name)')
     .order('created_at', { ascending: false })
   const products = data as ProductWithRelations[] | null
 

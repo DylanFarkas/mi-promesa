@@ -55,6 +55,13 @@ export interface ProductImage {
   created_at: string
 }
 
+/** Categorías adicionales; la principal sigue en `products.category_id`. */
+export interface ProductCategory {
+  product_id: string
+  category_id: string
+  created_at: string
+}
+
 export interface Order {
   id: string
   order_number: string
@@ -149,6 +156,12 @@ export type Database = {
         Row: ProductImage
         Insert: Omit<ProductImage, 'id' | 'created_at'>
         Update: Partial<Omit<ProductImage, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      product_categories: {
+        Row: ProductCategory
+        Insert: Pick<ProductCategory, 'product_id' | 'category_id'>
+        Update: Partial<Pick<ProductCategory, 'category_id'>>
         Relationships: []
       }
       orders: {

@@ -26,6 +26,7 @@ export default async function EditProductPage({
     { data: brandsData },
     { data: categoriesData },
     { data: imagesData },
+    { data: extraCatsData },
   ] = await Promise.all([
     supabase.from('products').select('*').eq('id', id).single(),
     supabase.from('brands').select('id, name').eq('is_active', true).order('name'),
@@ -35,12 +36,15 @@ export default async function EditProductPage({
       .select('*')
       .eq('product_id', id)
       .order('sort_order', { ascending: true }),
+    supabase.from('product_categories').select('category_id').eq('product_id', id),
   ])
 
   const product = productData as Product | null
   const brands = brandsData as Pick<Brand, 'id' | 'name'>[] | null
   const categories = categoriesData as Pick<Category, 'id' | 'name' | 'brand_id'>[] | null
   const images = imagesData as ProductImage[] | null
+  const initialExtraCategoryIds =
+    (extraCatsData as { category_id: string }[] | null)?.map((r) => r.category_id) ?? []
 
   if (!product) notFound()
 
@@ -63,6 +67,7 @@ export default async function EditProductPage({
         product={product}
         brands={brands ?? []}
         categories={categories ?? []}
+        initialExtraCategoryIds={initialExtraCategoryIds}
       />
 
       {/* Galería de imágenes secundarias */}

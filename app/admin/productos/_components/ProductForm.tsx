@@ -13,6 +13,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { FormSection } from '@/components/admin/FormSection'
 import { ImageUploader } from '@/components/admin/ImageUploader'
 import { generateSlug } from '@/lib/utils'
+import { replaceProductCategoryExtras } from '@/lib/supabase/productCategories'
 import type { Brand, Category, Product } from '@/types/database'
 import { Trash2 } from 'lucide-react'
 
@@ -20,9 +21,16 @@ interface ProductFormProps {
   product?: Product
   brands: Pick<Brand, 'id' | 'name'>[]
   categories: Pick<Category, 'id' | 'name' | 'brand_id'>[]
+  /** Categorías adicionales (excluye la principal en `product.category_id`). */
+  initialExtraCategoryIds?: string[]
 }
 
-export function ProductForm({ product, brands, categories }: ProductFormProps) {
+export function ProductForm({
+  product,
+  brands,
+  categories,
+  initialExtraCategoryIds = [],
+}: ProductFormProps) {
   const router = useRouter()
   const supabase = createClient()
   const isEditing = !!product
@@ -44,6 +52,9 @@ export function ProductForm({ product, brands, categories }: ProductFormProps) {
     product?.primary_image_url ?? '',
   )
   const [isActive, setIsActive] = useState(product?.is_active ?? true)
+  const [extraCategoryIds, setExtraCategoryIds] = useState<string[]>(() => [
+    ...initialExtraCategoryIds,
+  ])
 
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -70,6 +81,21 @@ export function ProductForm({ product, brands, categories }: ProductFormProps) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brandId])
+
+  useEffect(() => {
+    setExtraCategoryIds((prev) =>
+      prev.filter((cId) =>
+        categories.some(
+          (c) => c.id === cId && (!c.brand_id || c.brand_id === brandId),
+        ),
+      ),
+    )
+  }, [brandId, categories])
+
+  useEffect(() => {
+    if (!categoryId) return
+    setExtraCategoryIds((prev) => prev.filter((id) => id !== categoryId))
+  }, [categoryId])
 
   function handleNameChange(value: string) {
     setName(value)
@@ -130,10 +156,26 @@ export function ProductForm({ product, brands, categories }: ProductFormProps) {
         .update(payload as never)
         .eq('id', product.id)
 
+      if (dbError) {
+        setLoading(false)
+        setError(resolveProductError(dbError.message))
+        return
+      }
+
+      const extraErr = await replaceProductCategoryExtras(
+        supabase,
+        product.id,
+        categoryId,
+        extraCategoryIds,
+      )
       setLoading(false)
 
-      if (dbError) {
-        setError(resolveProductError(dbError.message))
+      if (extraErr) {
+        setError(
+          'Producto guardado, pero no se pudieron actualizar las categorías adicionales: ' +
+            extraErr.message,
+        )
+        router.refresh()
         return
       }
 
@@ -145,15 +187,33 @@ export function ProductForm({ product, brands, categories }: ProductFormProps) {
         .select('id')
         .single()
 
-      setLoading(false)
-
       if (dbError) {
+        setLoading(false)
         setError(resolveProductError(dbError.message))
         return
       }
 
-      // Redirigir a edición para que el usuario pueda añadir la galería
-      router.push(`/admin/productos/${(newProduct as { id: string }).id}?created=1`)
+      const newId = (newProduct as { id: string }).id
+      const extraErr = await replaceProductCategoryExtras(
+        supabase,
+        newId,
+        categoryId,
+        extraCategoryIds,
+      )
+      setLoading(false)
+
+      if (extraErr) {
+        setError(
+          'Producto creado, pero las categorías adicionales no se guardaron: ' +
+            extraErr.message +
+            ' Puedes corregirlas aquí y volver a guardar.',
+        )
+        router.push(`/admin/productos/${newId}`)
+        router.refresh()
+        return
+      }
+
+      router.push(`/admin/productos/${newId}?created=1`)
     }
   }
 
@@ -162,6 +222,10 @@ export function ProductForm({ product, brands, categories }: ProductFormProps) {
     if (msg.includes('products_sku')) return 'Ya existe un producto con ese SKU.'
     if (msg.includes('enforce_product_category_brand'))
       return 'La categoría seleccionada no pertenece a la marca del producto.'
+    if (msg.includes('enforce_product_category_link_brand'))
+      return 'Una categoría adicional no es válida para esta marca.'
+    if (msg.includes('La categoría principal no debe repetirse'))
+      return 'Quita la categoría principal de la lista de adicionales.'
     return msg
   }
 
@@ -229,7 +293,7 @@ export function ProductForm({ product, brands, categories }: ProductFormProps) {
             />
             <Select
               id="category_id"
-              label="Categoría"
+              label="Categoría principal"
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
               options={categoryOptions}
@@ -237,6 +301,47 @@ export function ProductForm({ product, brands, categories }: ProductFormProps) {
               disabled={!brandId}
             />
           </div>
+
+          {brandId && (
+            <fieldset className="space-y-2">
+              <legend className="text-sm font-medium text-slate-800">
+                Categorías adicionales
+              </legend>
+              <p className="text-xs text-slate-500">
+                Opcional. El producto aparecerá también en estas categorías (tienda y filtros). No
+                incluyas la principal.
+              </p>
+              <div className="max-h-40 space-y-2 overflow-y-auto rounded-lg border border-slate-200 bg-slate-50/80 p-3">
+                {filteredCategories.filter((c) => c.id !== categoryId).length === 0 ? (
+                  <p className="text-xs text-slate-400">No hay más categorías para esta marca.</p>
+                ) : (
+                  filteredCategories
+                    .filter((c) => c.id !== categoryId)
+                    .map((c) => (
+                      <label
+                        key={c.id}
+                        className="flex cursor-pointer items-center gap-2 text-sm text-slate-700"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={extraCategoryIds.includes(c.id)}
+                          onChange={() => {
+                            setExtraCategoryIds((prev) =>
+                              prev.includes(c.id)
+                                ? prev.filter((x) => x !== c.id)
+                                : [...prev, c.id],
+                            )
+                          }}
+                          className="size-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500"
+                        />
+                        {c.name}
+                      </label>
+                    ))
+                )}
+              </div>
+            </fieldset>
+          )}
+
           <Input
             id="sku"
             label="SKU"
