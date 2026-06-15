@@ -90,7 +90,7 @@ export default async function HomePage() {
                 </h2>
               </div>
               <Link
-                href="/marcas"
+                href="/productos"
                 className="border-b border-on-surface pb-1 text-xs font-semibold uppercase tracking-widest text-on-surface transition-opacity hover:opacity-70"
               >
                 Ver todo el catálogo

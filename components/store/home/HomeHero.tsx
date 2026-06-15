@@ -1,35 +1,43 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-const HERO_IMAGE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCDeft0AcaBCbfheThd02Yy62ZWknaRKrIsKOry9qPc5knKw1zorsHCG1nYJmdAJ3gpjqOPZZIwFWkEjY6UD45BYvdXP-6jrZPHkZaSNOkukb9Snz9RNJ3pY0e_vDAte9vaBCwIZqbo2Njg3FdKneftzJDOPaY5kXKHqzJ00kFPstDDV9-E-6RrNJNFGlp7mknImr6pBSigiko_4Up-M8d1fyGq8p6Ao8RoBYQ0I5c0xH7-ZUhVAMRyhMIz4DsrunknkWVyt-G9CU4'
+const HERO_IMAGE = '/images/home-hero.png'
 
 export function HomeHero() {
   return (
-    <section className="relative flex min-h-[70vh] items-center overflow-hidden bg-zinc-100 md:min-h-[85vh]">
+    <section className="relative -mt-16 flex min-h-dvh items-center overflow-hidden bg-[#E2D1C3] md:-mt-20">
       <figure className="absolute inset-0 z-0">
         <Image
           src={HERO_IMAGE}
-          alt="Colección curada Mi Promesa"
+          alt="Selección curada de productos premium para el hogar, bienestar y estilo de vida"
           fill
           priority
-          className="object-cover"
+          className="object-cover object-[70%_20%] md:object-[right_15%]"
           sizes="100vw"
         />
-        <span className="absolute inset-0 bg-black/10" aria-hidden />
+
+        <span
+          className="absolute inset-y-0 left-0 w-full max-w-3xl bg-linear-to-r from-[#E2D1C3] via-[#E2D1C3]/90 to-transparent"
+          aria-hidden
+        />
+        <span
+          className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-[#E2D1C3]/60 to-transparent md:hidden"
+          aria-hidden
+        />
       </figure>
 
-      <header className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 md:px-8">
-        <article className="max-w-xl space-y-8">
+      <header className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 md:px-8 lg:mx-0 lg:mr-auto lg:pl-10 xl:pl-14 2xl:pl-20">
+        <article className="max-w-xl space-y-8 md:max-w-lg lg:max-w-xl">
           <span className="block text-xs font-semibold uppercase tracking-[0.3em] text-secondary">
-            Colección curada
+            Mi Promesa
           </span>
-          <h1 className="font-serif text-4xl leading-[1.1] tracking-tight text-on-surface md:text-5xl lg:text-[3rem]">
-            La esencia de una vida con intención
+          <h1 className="font-serif text-4xl leading-[1.1] tracking-tight text-on-surface [text-shadow:0_0_24px_rgba(226,209,195,0.9)] md:text-5xl lg:text-[3rem]">
+            Productos que inspiran tu día a día
           </h1>
-          <p className="max-w-md text-lg leading-relaxed text-on-surface-variant">
-            Belleza, bienestar, nutrición y hogar. Marcas seleccionadas con la calidad que mereces,
-            entregadas con atención personalizada.
+          <p className="max-w-md text-lg leading-relaxed text-on-surface/85 [text-shadow:0_0_16px_rgba(226,209,195,0.85)]">
+            Descubre una selección de marcas y productos para el hogar, cuidado personal,
+            bienestar, estilo de vida y mucho más. Compra fácilmente con atención
+            personalizada y entrega confiable.
           </p>
           <p>
             <Link

@@ -1,17 +1,18 @@
 import type { Metadata } from 'next'
-import { Inter, Noto_Serif } from 'next/font/google'
+import { Lato, Plus_Jakarta_Sans } from 'next/font/google'
 import { StoreHeader } from '@/components/store/StoreHeader'
 import { StoreFooter } from '@/components/store/StoreFooter'
 
-const inter = Inter({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-inter',
+  weight: ['400', '500', '600', '700'],
 })
 
-const notoSerif = Noto_Serif({
+const lato = Lato({
   subsets: ['latin'],
   variable: '--font-noto-serif',
-  weight: ['400', '500', '600'],
+  weight: ['400', '700', '900'],
 })
 
 export const metadata: Metadata = {
@@ -26,10 +27,10 @@ export const metadata: Metadata = {
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className={`${inter.variable} ${notoSerif.variable} flex min-h-dvh flex-col bg-surface font-[family-name:var(--font-inter),system-ui,sans-serif] text-on-surface antialiased`}
+      className={`${jakarta.variable} ${lato.variable} flex min-h-dvh flex-col bg-surface font-[family-name:var(--font-inter),system-ui,sans-serif] text-on-surface antialiased`}
     >
       <StoreHeader />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pt-16 md:pt-20">{children}</main>
       <StoreFooter />
     </div>
   )

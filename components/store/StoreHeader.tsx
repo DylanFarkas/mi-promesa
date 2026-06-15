@@ -1,22 +1,45 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ShoppingBag, Menu, X, Search } from 'lucide-react'
 import { useCartStore } from '@/stores/cart-store'
 import { CartDrawer } from './CartDrawer'
 
+const SCROLL_THRESHOLD = 8
+
 export function StoreHeader() {
   const pathname = usePathname()
+  const isHome = pathname === '/'
   const [cartOpen, setCartOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [hidden, setHidden] = useState(false)
+  const lastScrollY = useRef(0)
 
   const { totalItems, hasHydrated } = useCartStore()
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8)
+    const onScroll = () => {
+      const y = window.scrollY
+      const delta = y - lastScrollY.current
+
+      setScrolled(y > SCROLL_THRESHOLD)
+
+      if (y <= SCROLL_THRESHOLD) {
+        setHidden(false)
+      } else if (delta > 2) {
+        setHidden(true)
+        setMobileMenuOpen(false)
+      } else if (delta < -2) {
+        setHidden(false)
+      }
+
+      lastScrollY.current = y
+    }
+
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -26,6 +49,7 @@ export function StoreHeader() {
   }, [pathname])
 
   const navLinks = [
+    { href: '/productos', label: 'Productos' },
     { href: '/marcas', label: 'Marcas' },
     { href: '/categorias', label: 'Categorías' },
     { href: '/#novedades', label: 'Novedades' },
@@ -34,17 +58,21 @@ export function StoreHeader() {
 
   const isActive = (href: string) => {
     if (href === '/#novedades') return pathname === '/'
+    if (href === '/productos') return pathname === '/productos'
     return pathname.startsWith(href.replace('/#novedades', ''))
   }
+
+  const isOverlay = isHome && !scrolled
 
   return (
     <>
       <header
         className={[
-          'sticky top-0 z-30 w-full border-b transition-all duration-200',
-          scrolled
-            ? 'border-zinc-100 bg-white/95 shadow-sm backdrop-blur-md'
-            : 'border-zinc-100 bg-white',
+          'store-header fixed top-0 right-0 left-0 z-30 w-full border-b',
+          hidden ? 'store-header--hidden' : 'store-header--visible',
+          isOverlay
+            ? 'border-transparent bg-transparent shadow-none'
+            : 'border-zinc-100 bg-white/95 shadow-sm backdrop-blur-md',
         ].join(' ')}
       >
         <div className="mx-auto max-w-7xl px-6 md:px-8">
@@ -78,7 +106,12 @@ export function StoreHeader() {
             <div className="flex items-center gap-4 md:gap-6">
               <Link
                 href="/buscar"
-                className="hidden items-center gap-2 rounded-full bg-white px-4 py-2 transition-all hover:bg-[#e8e8e8] lg:flex"
+                className={[
+                  'hidden items-center gap-2 rounded-full px-4 py-2 transition-all lg:flex',
+                  isOverlay
+                    ? 'bg-white/50 backdrop-blur-sm hover:bg-white/70'
+                    : 'bg-white hover:bg-[#e8e8e8]',
+                ].join(' ')}
                 aria-label="Buscar"
               >
                 <Search size={16} className="text-zinc-400" />

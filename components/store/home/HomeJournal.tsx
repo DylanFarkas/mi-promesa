@@ -23,11 +23,11 @@ export function HomeJournal() {
               Nuestra historia
             </span>
             <h2 className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-2xl text-on-surface md:text-[1.75rem]">
-              Refinamiento en los detalles
-            </h2>
+              Calidad y confianza en cada elección            </h2>
             <p className="text-base leading-relaxed text-on-surface-variant">
-              En Mi Promesa creemos que cada producto cuenta una historia. Descubre cómo curamos
-              marcas que transforman tu rutina diaria en un ritual de bienestar.
+              En Mi Promesa seleccionamos cuidadosamente productos y marcas que aportan 
+              valor a tu día a día. Nuestro compromiso es ofrecer variedad, calidad y una 
+              atención cercana para que encuentres todo lo que necesitas en un solo lugar
             </p>
             <Link
               href="/nosotros"

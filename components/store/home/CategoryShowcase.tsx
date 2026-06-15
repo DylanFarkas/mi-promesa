@@ -20,7 +20,7 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
       <div className="mx-auto max-w-7xl px-6 md:px-8">
         <div className="mb-12 text-center md:mb-16">
           <h2 className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-2xl text-on-surface md:text-[1.75rem]">
-            Nuestro mundo curado
+            Explora nuestras categorías
           </h2>
         </div>
 
