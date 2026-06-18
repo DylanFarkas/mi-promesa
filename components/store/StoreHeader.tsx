@@ -72,7 +72,7 @@ export function StoreHeader() {
           hidden ? 'store-header--hidden' : 'store-header--visible',
           isOverlay
             ? 'border-transparent bg-transparent shadow-none'
-            : 'border-zinc-100 bg-white/95 shadow-sm backdrop-blur-md',
+            : 'border-zinc-100 bg-white shadow-sm backdrop-blur-md',
         ].join(' ')}
       >
         <div className="mx-auto max-w-7xl px-6 md:px-8">

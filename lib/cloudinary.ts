@@ -18,3 +18,16 @@ export function generateCloudinarySignature(
 }
 
 export const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`
+
+/** Entrega desde Cloudinary con ancho máximo y calidad alta (evita doble compresión vía /_next/image). */
+export function cloudinaryOptimizedUrl(url: string, width = 1920): string {
+  const uploadPath = '/upload/'
+  const uploadIndex = url.indexOf(uploadPath)
+  if (uploadIndex === -1) return url
+
+  const base = url.slice(0, uploadIndex + uploadPath.length)
+  const suffix = url.slice(uploadIndex + uploadPath.length)
+  if (!/^v\d+\//.test(suffix)) return url
+
+  return `${base}c_limit,w_${width},q_auto:good,f_auto/${suffix}`
+}
