@@ -1,5 +1,9 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import {
+  getProductImageFallbacks,
+  resolveCategoryImageUrl,
+} from '@/lib/store/category-image'
 import { ProductCard } from '@/components/store/ProductCard'
 import { HomeHero } from '@/components/store/home/HomeHero'
 import { BrandMarquee } from '@/components/store/home/BrandMarquee'
@@ -29,7 +33,7 @@ async function getData() {
       .limit(8),
     supabase
       .from('categories')
-      .select('id, name, slug')
+      .select('id, name, slug, image_url')
       .is('brand_id', null)
       .eq('is_active', true)
       .order('sort_order')
@@ -37,31 +41,18 @@ async function getData() {
   ])
 
   const categories = categoriesRes.data ?? []
-  const categoryIds = categories.map((c) => c.id)
-
-  let categoryImages: Record<string, string | null> = {}
-  if (categoryIds.length > 0) {
-    const { data: sampleProducts } = await supabase
-      .from('products')
-      .select('category_id, primary_image_url')
-      .in('category_id', categoryIds)
-      .eq('is_active', true)
-      .not('primary_image_url', 'is', null)
-      .order('created_at', { ascending: false })
-
-    for (const row of sampleProducts ?? []) {
-      if (!categoryImages[row.category_id] && row.primary_image_url) {
-        categoryImages[row.category_id] = row.primary_image_url
-      }
-    }
-  }
+  const categoriesNeedingFallback = categories.filter((c) => !c.image_url)
+  const categoryImages = await getProductImageFallbacks(
+    supabase,
+    categoriesNeedingFallback.map((c) => c.id),
+  )
 
   return {
     brands: brandsRes.data ?? [],
     products: productsRes.data ?? [],
     categories: categories.map((c) => ({
       ...c,
-      imageUrl: categoryImages[c.id] ?? null,
+      imageUrl: resolveCategoryImageUrl(c.image_url, categoryImages[c.id] ?? null),
     })),
   }
 }

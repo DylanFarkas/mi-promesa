@@ -40,6 +40,7 @@ export default async function CategoriesPage() {
         <Table>
           <TableHead>
             <tr>
+              <Th>Imagen</Th>
               <Th>Nombre</Th>
               <Th>Tipo</Th>
               <Th>Marca</Th>
@@ -51,6 +52,20 @@ export default async function CategoriesPage() {
           <TableBody>
             {categories.map((cat) => (
               <tr key={cat.id} className="hover:bg-slate-50 transition-colors">
+                <Td>
+                  {cat.image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={cat.image_url}
+                      alt=""
+                      className="h-10 w-10 rounded-lg object-cover border border-slate-200"
+                    />
+                  ) : (
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-xs text-slate-400">
+                      —
+                    </span>
+                  )}
+                </Td>
                 <Td>
                   <span className="font-medium text-slate-900">{cat.name}</span>
                   {cat.description && (

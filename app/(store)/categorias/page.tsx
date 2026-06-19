@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { countProductsInCategory } from '@/lib/store/category-counts'
+import {
+  getProductImageFallback,
+  resolveCategoryImageUrl,
+} from '@/lib/store/category-image'
 import { CategoryCard } from '@/components/store/CategoryCard'
 
 export const metadata: Metadata = {
@@ -15,7 +19,7 @@ export default async function CategoriasPage() {
 
   const { data: categories } = await supabase
     .from('categories')
-    .select('id, name, slug, description')
+    .select('id, name, slug, description, image_url')
     .is('brand_id', null)
     .eq('is_active', true)
     .order('sort_order')
@@ -24,23 +28,15 @@ export default async function CategoriasPage() {
 
   const categoriesWithMeta = await Promise.all(
     categoryList.map(async (cat) => {
-      const [productCount, imageResult] = await Promise.all([
-        countProductsInCategory(supabase, cat.id),
-        supabase
-          .from('products')
-          .select('primary_image_url')
-          .eq('category_id', cat.id)
-          .eq('is_active', true)
-          .not('primary_image_url', 'is', null)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle(),
-      ])
+      const productCount = await countProductsInCategory(supabase, cat.id)
+      const productFallback = cat.image_url
+        ? null
+        : await getProductImageFallback(supabase, cat.id)
 
       return {
         ...cat,
         productCount,
-        imageUrl: imageResult.data?.primary_image_url ?? null,
+        imageUrl: resolveCategoryImageUrl(cat.image_url, productFallback),
       }
     }),
   )

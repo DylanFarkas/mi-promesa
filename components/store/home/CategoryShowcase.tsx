@@ -25,7 +25,7 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-6">
-          {categories.map((cat) => (
+          {categories.map((cat, index) => (
             <Link
               key={cat.id}
               href={`/categorias/${cat.slug}`}
@@ -36,6 +36,8 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
                   src={cat.imageUrl}
                   alt={cat.name}
                   fill
+                  priority={index === 0}
+                  loading={index === 0 ? undefined : 'eager'}
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />

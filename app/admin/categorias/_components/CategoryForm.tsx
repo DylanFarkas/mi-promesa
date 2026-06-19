@@ -11,6 +11,7 @@ import { Toggle } from '@/components/ui/Toggle'
 import { Alert } from '@/components/ui/Alert'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { FormSection } from '@/components/admin/FormSection'
+import { ImageUploader } from '@/components/admin/ImageUploader'
 import { generateSlug } from '@/lib/utils'
 import type { Brand, Category } from '@/types/database'
 import { Trash2 } from 'lucide-react'
@@ -28,6 +29,7 @@ export function CategoryForm({ category, brands }: CategoryFormProps) {
   const [name, setName] = useState(category?.name ?? '')
   const [slug, setSlug] = useState(category?.slug ?? '')
   const [description, setDescription] = useState(category?.description ?? '')
+  const [imageUrl, setImageUrl] = useState(category?.image_url ?? '')
   const [brandId, setBrandId] = useState(category?.brand_id ?? '')
   const [isActive, setIsActive] = useState(category?.is_active ?? true)
   const [sortOrder, setSortOrder] = useState(category?.sort_order ?? 0)
@@ -59,6 +61,7 @@ export function CategoryForm({ category, brands }: CategoryFormProps) {
       name: name.trim(),
       slug,
       description: description.trim() || null,
+      image_url: imageUrl.trim() || null,
       brand_id: brandId || null,
       is_active: isActive,
       sort_order: sortOrder,
@@ -139,6 +142,20 @@ export function CategoryForm({ category, brands }: CategoryFormProps) {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Descripción opcional..."
             rows={3}
+          />
+        </FormSection>
+
+        <FormSection
+          title="Imagen de presentación"
+          description="Imagen vertical que se muestra en el home y el listado de categorías."
+        >
+          <ImageUploader
+            value={imageUrl}
+            onChange={setImageUrl}
+            label="Imagen de la categoría"
+            hint="Formato vertical 3:4 recomendado. JPG, PNG o WebP."
+            folder="distribuidora/categories"
+            aspectRatio="portrait"
           />
         </FormSection>
 

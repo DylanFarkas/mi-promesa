@@ -10,7 +10,7 @@ interface ImageUploaderProps {
   hint?: string
   folder?: string
   /** Aspecto de la previsualización, por defecto cuadrado */
-  aspectRatio?: 'square' | 'wide'
+  aspectRatio?: 'square' | 'wide' | 'portrait'
 }
 
 export function ImageUploader({
@@ -100,7 +100,9 @@ export function ImageUploader({
   const previewClass =
     aspectRatio === 'wide'
       ? 'aspect-video w-full max-w-sm'
-      : 'h-36 w-36'
+      : aspectRatio === 'portrait'
+        ? 'aspect-3/4 w-full max-w-36'
+        : 'h-36 w-36'
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -146,7 +148,11 @@ export function ImageUploader({
           className={[
             'flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed',
             'cursor-pointer transition-colors duration-150 select-none',
-            aspectRatio === 'wide' ? 'w-full max-w-sm aspect-video' : 'h-36 w-36',
+            aspectRatio === 'wide'
+              ? 'w-full max-w-sm aspect-video'
+              : aspectRatio === 'portrait'
+                ? 'w-full max-w-36 aspect-3/4'
+                : 'h-36 w-36',
             uploading
               ? 'pointer-events-none border-slate-200 bg-slate-50'
               : dragOver
