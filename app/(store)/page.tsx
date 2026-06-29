@@ -9,7 +9,10 @@ import { HomeHero } from '@/components/store/home/HomeHero'
 import { BrandMarquee } from '@/components/store/home/BrandMarquee'
 import { CategoryShowcase } from '@/components/store/home/CategoryShowcase'
 import { BenefitsStrip } from '@/components/store/home/BenefitsStrip'
-import { HomeJournal } from '@/components/store/home/HomeJournal'
+import { FeatureSection } from '@/components/store/FeatureSection'
+
+const JOURNAL_IMAGE =
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuDX7wEu7jw27VINmnpIT3sranTNIc0ZFQcck2dgGfN_I_QMJhs9-wxQwWahhkJ8LH8NLdV-DBJfQ90b5wNGMhN-eZeRREfEJR5SqirRHqNWbKt48Oep_NCYBkOuj2CppeuGWV1GyQHP7sGxgoTUdLMyuGk2p0HNPXIC3Fz0ivFtNi4I8A95GIZ6B6_lE9zTP7SAikgepSY2SDIsnfq8TufYYtDMzZ2LOukdIZHl4-tpGeE4Wyn3BCCSKuLuz-OjSH1_JQYuJ2QUE-I'
 
 export const revalidate = 60
 
@@ -107,7 +110,27 @@ export default async function HomePage() {
 
       <BenefitsStrip />
 
-      <HomeJournal />
+      <FeatureSection
+        variant="overlay"
+        align="center-left"
+        height="screen"
+        scrim="strong"
+        eyebrow="Marcas seleccionadas"
+        title="Lo mejor de cada marca, en un solo lugar"
+        description="Trabajamos directamente con las marcas que distribuimos para garantizar productos originales y una experiencia de compra cuidada de principio a fin."
+        cta={{ label: 'Explorar marcas', href: '/marcas', variant: 'solid' }}
+        media={{ src: '/images/home-hero.png', alt: 'Selección de marcas y productos destacados de Mi Promesa' }}
+      />
+
+      <FeatureSection
+        variant="split"
+        mediaSide="left"
+        eyebrow="Nuestra historia"
+        title="Calidad y confianza en cada elección"
+        description="En Mi Promesa distribuimos productos y marcas que aportan valor a tu día a día. Nuestro compromiso es ofrecer variedad, calidad y una atención cercana para que encuentres todo lo que necesitas en un solo lugar."
+        cta={{ label: 'Conocer más', href: '/nosotros', variant: 'outline'}}
+        media={{ src: JOURNAL_IMAGE, alt: 'Variedad de productos disponibles en Mi Promesa' }}
+      />
     </>
   )
 }
