@@ -12,7 +12,7 @@ export function HomeJournal() {
           <div className="relative aspect-video w-full flex-1 overflow-hidden">
             <Image
               src={JOURNAL_IMAGE}
-              alt="Detalles que refinan el hogar"
+              alt="Variedad de productos disponibles en Mi Promesa"
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -25,9 +25,9 @@ export function HomeJournal() {
             <h2 className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-2xl text-on-surface md:text-[1.75rem]">
               Calidad y confianza en cada elección            </h2>
             <p className="text-base leading-relaxed text-on-surface-variant">
-              En Mi Promesa seleccionamos cuidadosamente productos y marcas que aportan 
-              valor a tu día a día. Nuestro compromiso es ofrecer variedad, calidad y una 
-              atención cercana para que encuentres todo lo que necesitas en un solo lugar
+              En Mi Promesa distribuimos productos y marcas que aportan valor a tu día a día.
+              Nuestro compromiso es ofrecer variedad, calidad y una atención cercana para que
+              encuentres todo lo que necesitas en un solo lugar.
             </p>
             <Link
               href="/nosotros"

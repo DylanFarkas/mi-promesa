@@ -17,11 +17,11 @@ const lato = Lato({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Mi Promesa — Curated Excellence',
+    default: 'Mi Promesa — Distribuidora',
     template: '%s | Mi Promesa',
   },
   description:
-    'Productos de belleza, bienestar, hogar y más. Calidad curada con atención personalizada.',
+    'Distribuidora de productos para hogar, belleza, nutrición y más. Variedad de marcas con atención personalizada.',
 }
 
 export default function StoreLayout({ children }: { children: React.ReactNode }) {

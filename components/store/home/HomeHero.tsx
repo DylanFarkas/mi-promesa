@@ -9,7 +9,7 @@ export function HomeHero() {
       <figure className="absolute inset-0 z-0">
         <Image
           src={HERO_IMAGE}
-          alt="Selección curada de productos premium para el hogar, bienestar y estilo de vida"
+          alt="Amplio catálogo de productos para hogar, belleza, nutrición y más"
           fill
           priority
           className="object-cover object-[70%_20%] md:object-[right_15%]"
@@ -35,16 +35,16 @@ export function HomeHero() {
             Productos que inspiran tu día a día
           </h1>
           <p className="max-w-md text-lg leading-relaxed text-on-surface/85 [text-shadow:0_0_16px_rgba(226,209,195,0.85)]">
-            Descubre una selección de marcas y productos para el hogar, cuidado personal,
-            bienestar, estilo de vida y mucho más. Compra fácilmente con atención
-            personalizada y entrega confiable.
+            Distribuidora de marcas y productos para hogar, belleza, nutrición,
+            bebidas y mucho más. Compra fácilmente con atención personalizada y
+            entrega confiable.
           </p>
           <p>
             <Link
               href="/marcas"
               className="inline-block bg-on-surface px-10 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-white transition-opacity hover:opacity-90"
             >
-              Explorar colección
+              Explorar catálogo
             </Link>
           </p>
         </article>

@@ -77,7 +77,7 @@ export default async function HomePage() {
                   Lo más nuevo
                 </span>
                 <h2 className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-2xl text-on-surface md:text-[1.75rem]">
-                  Esenciales para tu santuario
+                  Recién llegados al catálogo
                 </h2>
               </div>
               <Link

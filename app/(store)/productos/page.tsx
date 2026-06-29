@@ -6,7 +6,7 @@ import { ProductsBrandSidebar } from '@/components/store/products/ProductsBrandS
 
 export const metadata: Metadata = {
   title: 'Productos',
-  description: 'Explora todo nuestro catálogo de productos de belleza, bienestar y hogar.',
+  description: 'Explora todo nuestro catálogo de productos para hogar, belleza, nutrición y más.',
 }
 
 export const revalidate = 60
@@ -71,8 +71,8 @@ export default async function ProductosPage({ searchParams }: Props) {
             Todos los productos
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-on-surface-variant">
-            Nuestro catálogo completo, curado con los mejores estándares de calidad para tu bienestar
-            y el de tu hogar.
+            Catálogo completo con los mejores estándares de calidad. Encuentra lo que necesitas en un
+            solo lugar.
           </p>
         </div>
         <aside className="flex flex-col items-start gap-2 lg:items-end">

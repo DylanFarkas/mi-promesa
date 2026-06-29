@@ -52,7 +52,7 @@ export default async function CategoriasPage() {
         </h1>
         <p className="mt-4 max-w-xl text-base leading-relaxed text-on-surface-variant">
           Explora nuestros productos organizados por tipo. Cada categoría reúne lo mejor de nuestro
-          catálogo curado.
+          catálogo completo.
         </p>
       </header>
 

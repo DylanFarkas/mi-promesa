@@ -1,14 +1,13 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { cloudinaryOptimizedUrl } from "@/lib/cloudinary";
 import type { Brand } from "@/types/database";
 
 type BrandMarqueeData = Pick<Brand, "name" | "slug" | "logo_url">;
 
-const BRAND_IMAGE_SIZES = {
-  featured: "(max-width: 768px) 100vw, 1280px",
-  default: "(max-width: 768px) 100vw, 640px",
-} as const;
+const CARD_SIZES = "(max-width: 640px) 260px, 340px";
 
 interface BrandMarqueeProps {
   brands: BrandMarqueeData[];
@@ -16,82 +15,59 @@ interface BrandMarqueeProps {
 
 function BrandCard({
   brand,
-  featured,
+  clone = false,
 }: {
   brand: BrandMarqueeData;
-  featured: boolean;
+  clone?: boolean;
 }) {
   return (
     <Link
       href={`/marcas/${brand.slug}`}
-      aria-label={brand.name}
-      className={`
-        group relative block overflow-hidden border border-zinc-100 bg-white
-        transition-shadow duration-500 hover:shadow-lg
+      aria-label={clone ? undefined : brand.name}
+      aria-hidden={clone || undefined}
+      tabIndex={clone ? -1 : undefined}
+      className="
+        group relative block w-[260px] shrink-0 overflow-hidden border border-zinc-100 bg-white
+        mr-4 md:mr-5
+        transition-shadow duration-500 hover:shadow-xl
         focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary
-        ${featured ? "md:col-span-2 md:row-span-2 min-h-[280px] md:min-h-0" : "min-h-[220px]"}
-      `}
+        sm:w-[300px] md:w-[340px]
+      "
     >
-      {brand.logo_url ? (
-        <Image
-          src={cloudinaryOptimizedUrl(brand.logo_url, featured ? 1920 : 1280)}
-          alt=""
-          fill
-          unoptimized
-          priority={featured}
-          sizes={featured ? BRAND_IMAGE_SIZES.featured : BRAND_IMAGE_SIZES.default}
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06] group-focus-visible:scale-[1.06] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-white" aria-hidden />
-      )}
-
-      <div
-        className="
-          absolute inset-0 bg-white/0 backdrop-blur-none
-          transition-all duration-500 ease-out
-          max-md:bg-white/75
-          group-hover:bg-white/90 group-hover:backdrop-blur-[2px]
-          group-focus-visible:bg-white/90 group-focus-visible:backdrop-blur-[2px]
-          motion-reduce:transition-none
-        "
-        aria-hidden
-      />
-
-      <div className="absolute inset-0 flex items-center justify-center p-6 md:p-8">
-        <div
-          className="
-            flex flex-col items-center text-center
-            max-md:translate-y-0 max-md:opacity-100
-            translate-y-6 opacity-0
-            transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
-            group-hover:translate-y-0 group-hover:opacity-100 group-hover:delay-75
-            group-focus-visible:translate-y-0 group-focus-visible:opacity-100
-            motion-reduce:translate-y-0 motion-reduce:opacity-0
-            motion-reduce:group-hover:opacity-100 motion-reduce:group-focus-visible:opacity-100
-          "
-        >
-          <span
-            className="
-              mb-4 block h-px w-10 bg-secondary
-              max-md:w-8
-              transition-all duration-500 ease-out
-              md:w-0 md:group-hover:w-10 md:group-hover:delay-150
-              group-focus-visible:w-10
-              motion-reduce:w-10
-            "
+      <div className="relative aspect-square overflow-hidden bg-white">
+        {brand.logo_url ? (
+          <div className="absolute inset-0 flex items-center justify-center p-8 md:p-10">
+            <Image
+              src={cloudinaryOptimizedUrl(brand.logo_url, 640)}
+              alt=""
+              width={280}
+              height={160}
+              unoptimized
+              sizes={CARD_SIZES}
+              className="max-h-full max-w-full object-contain transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            />
+          </div>
+        ) : (
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-surface px-6"
             aria-hidden
-          />
-
-          <h3
-            className={`
-              font-[family-name:var(--font-noto-serif),Georgia,serif] font-medium text-on-surface
-              ${featured ? "text-2xl md:text-3xl lg:text-4xl" : "text-xl md:text-2xl"}
-            `}
           >
-            {brand.name}
-          </h3>
-        </div>
+            <span className="text-center font-[family-name:var(--font-noto-serif),Georgia,serif] text-lg text-on-surface-variant">
+              {brand.name}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between gap-4 border-t border-zinc-100 px-5 py-4 md:px-6 md:py-5">
+        <h3 className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-lg text-on-surface md:text-xl">
+          {brand.name}
+        </h3>
+        <ArrowUpRight
+          className="size-4 shrink-0 text-on-surface-variant transition-all duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-secondary motion-reduce:transition-none"
+          strokeWidth={1.5}
+          aria-hidden
+        />
       </div>
     </Link>
   );
@@ -100,34 +76,43 @@ function BrandCard({
 export function BrandMarquee({ brands }: BrandMarqueeProps) {
   if (!brands.length) return null;
 
-  return (
-    <section className="border-y border-zinc-100 bg-white py-16 md:py-20">
-      <div className="mx-auto max-w-7xl px-6 md:px-8">
-        <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between md:mb-16">
-          <div>
-            <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
-              Curaduría
-            </span>
-            <h2 className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-2xl text-on-surface md:text-[1.75rem]">
-              Marcas que confiamos
-            </h2>
-          </div>
+  // Velocidad constante sin importar la cantidad de marcas.
+  const durationSeconds = Math.max(brands.length * 6, 24);
 
-          <Link
-            href="/marcas"
-            className="border-b border-on-surface pb-1 text-xs font-semibold uppercase tracking-widest text-on-surface transition-opacity hover:opacity-70"
-          >
-            Ver todas las marcas
-          </Link>
+  return (
+    <section className="overflow-hidden border-y border-zinc-100 bg-white py-16 md:py-20">
+      <div className="mx-auto mb-12 flex max-w-7xl flex-col gap-4 px-6 sm:flex-row sm:items-end sm:justify-between md:mb-16 md:px-8">
+        <div>
+          <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
+            Marcas aliadas
+          </span>
+          <h2 className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-2xl text-on-surface md:text-[1.75rem]">
+            Marcas que confiamos
+          </h2>
         </div>
 
-        <div className="grid auto-rows-fr grid-cols-1 gap-4 md:grid-cols-4 md:gap-5 md:auto-rows-[minmax(200px,1fr)]">
-          {brands.map((brand, index) => (
-            <BrandCard
-              key={brand.slug}
-              brand={brand}
-              featured={index === 0}
-            />
+        <Link
+          href="/marcas"
+          className="self-start border-b border-on-surface pb-1 text-xs font-semibold uppercase tracking-widest text-on-surface transition-opacity hover:opacity-70 sm:self-auto"
+        >
+          Ver todas las marcas
+        </Link>
+      </div>
+
+      <div className="brand-marquee">
+        <div
+          className="brand-marquee-track flex"
+          style={
+            { "--marquee-duration": `${durationSeconds}s` } as CSSProperties
+          }
+        >
+          {brands.map((brand) => (
+            <BrandCard key={brand.slug} brand={brand} />
+          ))}
+          {brands.map((brand) => (
+            <span key={`clone-${brand.slug}`} className="brand-marquee-clone contents">
+              <BrandCard brand={brand} clone />
+            </span>
           ))}
         </div>
       </div>

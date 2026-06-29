@@ -11,7 +11,7 @@ export function StoreFooter() {
               Mi Promesa
             </span>
             <p className="max-w-xs font-[family-name:var(--font-noto-serif),Georgia,serif] text-xs uppercase leading-relaxed tracking-widest text-zinc-400">
-              Un destino para quienes valoran la calidad silenciosa y la excelencia curada.
+              Distribuidora de productos de calidad con variedad, confianza y atención personalizada.
             </p>
           </div>
 
@@ -75,7 +75,7 @@ export function StoreFooter() {
 
           <div className="space-y-4">
             <h5 className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-xs font-bold uppercase tracking-widest text-zinc-900">
-              Mantente curado
+              Recibe novedades
             </h5>
             <form className="flex items-center justify-between border-b border-zinc-200 pb-2">
               <input
@@ -93,7 +93,7 @@ export function StoreFooter() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-zinc-100 pt-8 md:flex-row">
           <span className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-[10px] uppercase tracking-widest text-zinc-400">
-            © {new Date().getFullYear()} Mi Promesa. Curated Excellence.
+            © {new Date().getFullYear()} Mi Promesa. Distribuidora de calidad.
           </span>
           <div className="flex gap-6">
             <span className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-[10px] uppercase tracking-widest text-zinc-400">

@@ -73,3 +73,56 @@ body {
     transition: none;
   }
 }
+
+/* Marquee de marcas — cinta horizontal con desplazamiento continuo */
+@keyframes brand-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.brand-marquee {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 7%,
+    #000 93%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 7%,
+    #000 93%,
+    transparent
+  );
+}
+
+.brand-marquee-track {
+  width: max-content;
+  animation: brand-marquee-scroll var(--marquee-duration, 40s) linear infinite;
+}
+
+.brand-marquee:hover .brand-marquee-track,
+.brand-marquee:focus-within .brand-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-marquee {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .brand-marquee-track {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: none;
+  }
+  .brand-marquee-clone {
+    display: none;
+  }
+}

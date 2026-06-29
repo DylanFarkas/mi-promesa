@@ -50,7 +50,7 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
                   {cat.name}
                 </h3>
                 <span className="mt-2 inline-block border-b border-white pb-1 text-[10px] font-semibold uppercase tracking-widest">
-                  Ver colección
+                  Ver productos
                 </span>
               </div>
             </Link>

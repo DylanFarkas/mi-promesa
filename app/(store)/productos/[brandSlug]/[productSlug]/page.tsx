@@ -265,10 +265,10 @@ export default async function ProductPage({ params }: Props) {
           <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between md:mb-12">
             <div>
               <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-on-surface-variant">
-                Curado para ti
+                También te puede interesar
               </span>
               <h2 className="font-serif text-2xl text-on-surface md:text-[1.75rem]">
-                Completa la experiencia
+                Más de esta marca
               </h2>
             </div>
             <Link

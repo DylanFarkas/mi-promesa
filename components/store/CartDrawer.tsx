@@ -61,7 +61,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             Bolsa de compras
           </h2>
           <p className="mt-1 font-serif text-sm text-on-surface-variant">
-            Seleccionado exclusivamente para ti
+            Revisa tus productos antes de finalizar
           </p>
         </div>
           <button

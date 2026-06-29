@@ -9,11 +9,11 @@ const BENEFITS = [
   {
     icon: ShieldCheck,
     title: 'Autenticidad garantizada',
-    description: 'Productos originales, seleccionados directamente de nuestras marcas aliadas.',
+    description: 'Productos originales, directamente de las marcas que distribuimos.',
   },
   {
     icon: MessageCircle,
-    title: 'Concierge por WhatsApp',
+    title: 'Atención por WhatsApp',
     description: 'Asesoría en tiempo real para recomendaciones y seguimiento de tu pedido.',
   },
 ] as const

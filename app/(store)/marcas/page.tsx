@@ -4,7 +4,7 @@ import { BrandCard } from '@/components/store/BrandCard'
 
 export const metadata: Metadata = {
   title: 'Marcas',
-  description: 'Explora nuestras marcas de productos de belleza, bienestar y hogar.',
+  description: 'Explora las marcas que distribuimos en hogar, belleza, nutrición y más.',
 }
 
 export const revalidate = 60
@@ -37,8 +37,8 @@ export default async function MarcasPage() {
           Nuestras marcas
         </h1>
         <p className="mt-4 max-w-xl text-base leading-relaxed text-on-surface-variant">
-          Marcas seleccionadas con los mejores estándares de calidad. Cada una curada para tu bienestar
-          y el de tu hogar.
+          Trabajamos con marcas reconocidas y de calidad comprobada, listas para llegar a tu hogar o
+          negocio.
         </p>
       </header>
 

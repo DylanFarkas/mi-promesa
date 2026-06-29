@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     default: 'Mi Promesa — Distribuidora',
     template: '%s | Mi Promesa',
   },
-  description: 'Distribuidora de productos de belleza, bienestar, nutrición y hogar.',
+  description: 'Distribuidora de productos para hogar, belleza, nutrición, bebidas y más.',
 };
 
 export default function RootLayout({
