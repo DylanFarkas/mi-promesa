@@ -6,7 +6,7 @@ import {
 } from '@/lib/store/category-image'
 import { ProductCard } from '@/components/store/ProductCard'
 import { HomeHero } from '@/components/store/home/HomeHero'
-import { BrandMarquee } from '@/components/store/home/BrandMarquee'
+import { BrandShowcase } from '@/components/store/home/BrandShowcase'
 import { CategoryShowcase } from '@/components/store/home/CategoryShowcase'
 import { BenefitsStrip } from '@/components/store/home/BenefitsStrip'
 import { FeatureSection } from '@/components/store/FeatureSection'
@@ -67,7 +67,7 @@ export default async function HomePage() {
     <>
       <HomeHero />
 
-      <BrandMarquee brands={brands} />
+      <BrandShowcase brands={brands} />
 
       <CategoryShowcase categories={categories} />
 
