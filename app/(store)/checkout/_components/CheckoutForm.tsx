@@ -61,12 +61,9 @@ function CheckoutField({
 }) {
   return (
     <div className={className}>
-      <label
-        htmlFor={id}
-        className="mb-2 block text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant"
-      >
+      <label htmlFor={id} className="mb-2 block text-sm font-semibold text-ink">
         {label}
-        {required && <span className="text-zinc-900"> *</span>}
+        {required && <span className="text-accent"> *</span>}
       </label>
       <input
         id={id}
@@ -75,7 +72,7 @@ function CheckoutField({
         onChange={(e) => onChange(e.target.value)}
         required={required}
         placeholder={placeholder}
-        className="w-full border-0 border-b border-outline-variant bg-transparent px-0 py-2 text-base text-on-surface transition-colors placeholder:text-on-surface-variant/60 focus:border-zinc-900 focus:outline-none focus:ring-0"
+        className="w-full rounded-2xl border border-transparent bg-white px-4 py-3 text-base text-ink shadow-card transition-all placeholder:text-on-surface-variant/50 focus:border-primary/50 focus:outline-none focus:ring-4 focus:ring-primary/15"
       />
     </div>
   )
@@ -136,7 +133,7 @@ export function CheckoutForm() {
   if (!hasHydrated) {
     return (
       <div className="flex items-center justify-center py-24">
-        <Loader2 size={24} className="animate-spin text-zinc-900" />
+        <Loader2 size={24} className="animate-spin text-primary" />
       </div>
     )
   }
@@ -144,12 +141,11 @@ export function CheckoutForm() {
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-24 text-on-surface-variant">
-        <ShoppingBag size={48} strokeWidth={1} />
-        <p className="font-serif text-base">Tu bolsa está vacía</p>
-        <Link
-          href="/marcas"
-          className="flex items-center gap-2 border-b border-zinc-900 pb-0.5 text-[10px] font-semibold uppercase tracking-widest text-zinc-900 transition-opacity hover:opacity-70"
-        >
+        <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-surface text-primary">
+          <ShoppingBag size={28} strokeWidth={1.5} />
+        </span>
+        <p className="text-base font-medium">Tu carrito está vacío</p>
+        <Link href="/marcas" className="btn-store btn-store--primary">
           <ArrowLeft size={14} />
           Explorar productos
         </Link>
@@ -161,30 +157,35 @@ export function CheckoutForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-6">
-        {/* Form column */}
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
-          <header className="mb-12">
-            <h1 className="font-serif text-3xl text-on-surface md:text-4xl">Checkout</h1>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-on-surface-variant">
-              Completa tus datos para finalizar tu pedido. Tu información se compartirá con el
-              artesano vía WhatsApp.
+          <header className="mb-10">
+            <span className="mb-3 inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] text-primary uppercase">
+              <span aria-hidden>✦</span>
+              Último paso
+            </span>
+            <h1 className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-4xl font-bold tracking-tight text-ink md:text-5xl">
+              Checkout
+            </h1>
+            <p className="mt-3 max-w-md text-base leading-relaxed text-on-surface-variant">
+              Completa tus datos para finalizar tu pedido. Te contactaremos por WhatsApp para
+              coordinar el pago y la entrega.
             </p>
           </header>
 
           {error && (
-            <div className="mb-8 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="mb-8 rounded-2xl border border-accent/30 bg-accent-soft px-4 py-3 text-sm text-accent">
               {error}
             </div>
           )}
 
-          <section className="space-y-12">
-            <div className="space-y-8">
-              <h2 className="border-b border-outline-variant pb-2 font-serif text-2xl text-on-surface">
+          <section className="space-y-10">
+            <div className="space-y-6">
+              <h2 className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-xl font-bold text-ink">
                 Datos de entrega
               </h2>
 
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 <CheckoutField
                   id="customerName"
                   label="Nombre completo"
@@ -222,7 +223,7 @@ export function CheckoutForm() {
                 placeholder="Calle de la Luna, 42. 4B"
               />
 
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
                 <CheckoutField
                   id="shippingCity"
                   label="Ciudad"
@@ -249,7 +250,7 @@ export function CheckoutForm() {
               <div>
                 <label
                   htmlFor="customerNotes"
-                  className="mb-2 block text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant"
+                  className="mb-2 block text-sm font-semibold text-ink"
                 >
                   Notas adicionales
                 </label>
@@ -257,61 +258,67 @@ export function CheckoutForm() {
                   id="customerNotes"
                   value={form.customerNotes}
                   onChange={(e) => handleChange('customerNotes', e.target.value)}
-                  rows={2}
+                  rows={3}
                   placeholder="Instrucciones especiales, horario de entrega..."
-                  className="w-full resize-none border-0 border-b border-outline-variant bg-transparent px-0 py-2 text-base text-on-surface transition-colors placeholder:text-on-surface-variant/60 focus:border-zinc-900 focus:outline-none focus:ring-0"
+                  className="w-full resize-none rounded-2xl border border-transparent bg-white px-4 py-3 text-base text-ink shadow-card transition-all placeholder:text-on-surface-variant/50 focus:border-primary/50 focus:outline-none focus:ring-4 focus:ring-primary/15"
                 />
               </div>
             </div>
 
-            <div className="space-y-6">
-              <h2 className="border-b border-outline-variant pb-2 font-serif text-2xl text-on-surface">
+            <div className="space-y-4">
+              <h2 className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-xl font-bold text-ink">
                 Método de envío
               </h2>
-              <div className="flex cursor-pointer items-center justify-between border border-zinc-900 bg-white p-4 transition-all hover:shadow-sm">
+              <div className="flex cursor-pointer items-center justify-between rounded-2xl bg-primary-soft/60 p-4 shadow-card ring-2 ring-primary/40 transition-all">
                 <div className="flex items-center gap-4">
-                  <Truck size={22} className="text-zinc-900" strokeWidth={1.5} />
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white shadow-pop">
+                    <Truck size={20} strokeWidth={1.75} />
+                  </span>
                   <div>
-                    <p className="font-semibold text-on-surface">Envío estándar boutique</p>
+                    <p className="font-semibold text-ink">Envío estándar</p>
                     <p className="text-sm text-on-surface-variant">3–5 días hábiles</p>
                   </div>
                 </div>
-                <span className="text-sm font-semibold text-on-surface-variant">A coordinar</span>
+                <span className="text-sm font-semibold text-primary">A coordinar</span>
               </div>
             </div>
           </section>
         </div>
 
-        {/* Order summary */}
         <aside className="lg:col-span-5">
-          <div className="sticky top-28 space-y-8 border border-outline-variant bg-surface-container-low p-6 shadow-sm md:p-8">
-            <h2 className="font-serif text-xl text-on-surface md:text-2xl">Resumen del pedido</h2>
+          <div className="sticky top-28 space-y-6 rounded-4xl bg-white p-6 shadow-float md:p-7">
+            <h2 className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-xl font-bold text-ink">
+              Resumen del pedido
+            </h2>
 
-            <ul className="hide-scrollbar max-h-[400px] space-y-6 overflow-y-auto pr-2">
+            <ul className="hide-scrollbar max-h-100 space-y-4 overflow-y-auto pr-1">
               {items.map((item) => (
-                <li key={item.productId} className="flex gap-4">
-                  <div className="relative h-32 w-24 shrink-0 bg-surface-container">
+                <li
+                  key={item.productId}
+                  className="flex gap-3 rounded-2xl bg-surface/70 p-3"
+                >
+                  <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-white shadow-sm">
                     {item.image ? (
                       <Image
                         src={item.image}
                         alt={item.title}
                         fill
-                        className="object-cover grayscale-20 transition-all duration-500 hover:grayscale-0"
-                        sizes="96px"
+                        className="object-cover"
+                        sizes="64px"
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">
-                        <ShoppingBag size={20} className="text-zinc-300" />
+                        <ShoppingBag size={18} className="text-outline-variant" />
                       </div>
                     )}
                   </div>
                   <div className="flex min-w-0 grow flex-col justify-between">
                     <div>
-                      <h4 className="font-semibold text-zinc-900">{item.title}</h4>
-                      <p className="text-sm text-on-surface-variant">{item.brandName}</p>
-                      <p className="text-sm text-on-surface-variant">Cant: {item.quantity}</p>
+                      <h4 className="line-clamp-2 text-sm font-semibold text-ink">{item.title}</h4>
+                      <p className="text-xs text-primary">{item.brandName}</p>
+                      <p className="text-xs text-on-surface-variant">Cant: {item.quantity}</p>
                     </div>
-                    <p className="self-end font-semibold text-zinc-900">
+                    <p className="self-end text-sm font-bold text-ink">
                       {formatCurrency(item.price * item.quantity)}
                     </p>
                   </div>
@@ -319,15 +326,15 @@ export function CheckoutForm() {
               ))}
             </ul>
 
-            <div className="space-y-4 border-t border-outline-variant pt-6">
+            <div className="space-y-3 border-t border-outline-variant/40 pt-5">
               <CheckoutTotals subtotal={total} />
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-3 bg-zinc-900 py-5 text-[10px] font-semibold uppercase tracking-widest text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className="btn-store btn-store--primary w-full py-4 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? (
                   <>
@@ -341,9 +348,8 @@ export function CheckoutForm() {
                   </>
                 )}
               </button>
-              <p className="text-center text-sm italic text-on-surface-variant">
-                Checkout seguro. Enviaremos los detalles de tu bolsa al artesano para confirmar
-                disponibilidad.
+              <p className="text-center text-xs leading-relaxed text-on-surface-variant">
+                Checkout seguro. Confirmaremos disponibilidad y te escribiremos por WhatsApp.
               </p>
             </div>
           </div>
@@ -357,14 +363,14 @@ function CheckoutTotals({ subtotal }: { subtotal: number }) {
   return (
     <>
       <div className="flex justify-between text-sm">
-        <span className="uppercase tracking-wider text-on-surface-variant">Subtotal</span>
-        <span>{formatCurrency(subtotal)}</span>
+        <span className="text-on-surface-variant">Subtotal</span>
+        <span className="font-medium text-ink">{formatCurrency(subtotal)}</span>
       </div>
       <div className="flex justify-between text-sm">
-        <span className="uppercase tracking-wider text-on-surface-variant">Envío</span>
+        <span className="text-on-surface-variant">Envío</span>
         <span className="text-on-surface-variant">A coordinar</span>
       </div>
-      <div className="flex justify-between border-t border-outline-variant pt-4 font-serif text-xl text-on-surface">
+      <div className="flex justify-between border-t border-outline-variant/40 pt-3 text-lg font-bold text-ink">
         <span>Total</span>
         <span>{formatCurrency(subtotal)}</span>
       </div>

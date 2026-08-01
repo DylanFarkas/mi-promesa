@@ -14,32 +14,38 @@ export default async function ConfirmacionPage({ searchParams }: Props) {
   const { order } = await searchParams
 
   return (
-    <div className="mx-auto max-w-2xl px-4 sm:px-6 py-20 text-center">
-      {/* Icon */}
-      <div className="flex justify-center mb-6">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-          <CheckCircle size={40} className="text-green-500" />
+    <div className="mx-auto max-w-2xl px-5 py-16 text-center sm:px-6 md:py-20">
+      <div className="mb-6 flex justify-center">
+        <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-primary-soft shadow-card">
+          <CheckCircle size={40} className="text-primary" />
+          <span
+            className="absolute -top-1 -right-2 text-xl text-secondary"
+            aria-hidden
+          >
+            ✦
+          </span>
         </div>
       </div>
 
-      <h1 className="text-3xl font-bold text-stone-900 mb-3">¡Pedido recibido!</h1>
+      <h1 className="mb-3 font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-4xl font-bold tracking-tight text-ink">
+        ¡Pedido <span className="store-squiggle text-primary">recibido</span>!
+      </h1>
 
       {order && (
-        <p className="text-sm text-stone-500 mb-2">
+        <p className="mb-2 text-sm text-on-surface-variant">
           Número de orden:{' '}
-          <span className="font-mono font-bold text-stone-800 bg-stone-100 px-2 py-0.5 rounded-md">
+          <span className="rounded-lg bg-surface px-2.5 py-1 font-mono font-bold text-ink">
             {order}
           </span>
         </p>
       )}
 
-      <p className="text-stone-500 leading-relaxed mt-4 max-w-md mx-auto">
-        Recibimos tu pedido correctamente. Nos pondremos en contacto contigo por WhatsApp
-        para coordinar el pago y la entrega.
+      <p className="mx-auto mt-4 max-w-md leading-relaxed text-on-surface-variant">
+        Recibimos tu pedido correctamente. Nos pondremos en contacto contigo por WhatsApp para
+        coordinar el pago y la entrega.
       </p>
 
-      {/* Steps */}
-      <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3 text-left">
+      <div className="mt-10 grid grid-cols-1 gap-4 text-left sm:grid-cols-3">
         {[
           {
             step: '1',
@@ -63,39 +69,35 @@ export default async function ConfirmacionPage({ searchParams }: Props) {
           <div
             key={s.step}
             className={[
-              'rounded-2xl border p-4',
-              s.done
-                ? 'border-green-200 bg-green-50'
-                : 'border-stone-100 bg-stone-50',
+              'rounded-2xl p-5 shadow-card',
+              s.done ? 'bg-primary-soft/60' : 'bg-white',
             ].join(' ')}
           >
-            <div className={[
-              'text-xs font-bold mb-2',
-              s.done ? 'text-green-600' : 'text-stone-400',
-            ].join(' ')}>
+            <div
+              className={[
+                'mb-2 text-xs font-bold tracking-[0.18em] uppercase',
+                s.done ? 'text-primary' : 'text-on-surface-variant',
+              ].join(' ')}
+            >
               Paso {s.step}
             </div>
-            <p className="text-sm font-semibold text-stone-800">{s.title}</p>
-            <p className="text-xs text-stone-500 mt-1 leading-relaxed">{s.desc}</p>
+            <p className="text-sm font-semibold text-ink">{s.title}</p>
+            <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">{s.desc}</p>
           </div>
         ))}
       </div>
 
-      {/* CTAs */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10">
+      <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
         <a
           href="https://wa.me/521xxxxxxxxxx"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full bg-green-500 px-6 py-3 text-sm font-semibold text-white hover:bg-green-600 transition-colors"
+          className="btn-store btn-store--primary"
         >
           <MessageCircle size={16} />
           Abrir WhatsApp
         </a>
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 rounded-full border border-stone-200 px-6 py-3 text-sm font-semibold text-stone-600 hover:bg-stone-50 transition-colors"
-        >
+        <Link href="/" className="btn-store btn-store--ghost">
           <Home size={16} />
           Volver al inicio
         </Link>

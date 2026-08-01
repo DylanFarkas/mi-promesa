@@ -1,18 +1,18 @@
 import type { Metadata } from 'next'
-import { Lato, Plus_Jakarta_Sans } from 'next/font/google'
+import { Space_Grotesk, Plus_Jakarta_Sans } from 'next/font/google'
 import { StoreHeader } from '@/components/store/StoreHeader'
 import { StoreFooter } from '@/components/store/StoreFooter'
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-store-sans-face',
   weight: ['400', '500', '600', '700'],
 })
 
-const lato = Lato({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-noto-serif',
-  weight: ['400', '700', '900'],
+  variable: '--font-store-display-face',
+  weight: ['500', '600', '700'],
 })
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default function StoreLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className={`${jakarta.variable} ${lato.variable} flex min-h-dvh flex-col bg-surface font-[family-name:var(--font-inter),system-ui,sans-serif] text-on-surface antialiased`}
+      className={`${jakarta.variable} ${spaceGrotesk.variable} flex min-h-dvh flex-col bg-paper font-[family-name:var(--font-store-sans-face),system-ui,sans-serif] text-on-surface antialiased`}
     >
       <StoreHeader />
       <main className="flex-1 pt-16 md:pt-20">{children}</main>

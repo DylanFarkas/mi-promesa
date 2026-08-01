@@ -40,7 +40,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
         ref={overlayRef}
         onClick={onClose}
         className={[
-          'fixed inset-0 z-90 bg-black/30 backdrop-blur-[2px] transition-opacity duration-500',
+          'fixed inset-0 z-90 bg-ink/40 backdrop-blur-[2px] transition-opacity duration-500',
           open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0',
         ].join(' ')}
         aria-hidden="true"
@@ -51,33 +51,33 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
         aria-label="Bolsa de compras"
         aria-modal="true"
         className={[
-          'fixed top-0 right-0 z-100 flex h-full w-full flex-col border-l border-outline-variant bg-white p-6 shadow-2xl transition-transform duration-500 ease-in-out md:w-[450px] md:p-8',
+          'fixed top-0 right-0 z-100 flex h-full w-full flex-col bg-paper p-5 shadow-float transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:w-105 md:rounded-l-[1.75rem] md:p-7',
           open ? 'translate-x-0' : 'translate-x-full',
         ].join(' ')}
       >
-        <div className="mb-8 flex items-start justify-between">
+        <div className="mb-6 flex items-start justify-between">
           <div>
-          <h2 className="text-lg font-bold uppercase tracking-widest text-zinc-900">
-            Bolsa de compras
-          </h2>
-          <p className="mt-1 font-serif text-sm text-on-surface-variant">
-            Revisa tus productos antes de finalizar
-          </p>
-        </div>
+            <h2 className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-xl font-bold tracking-tight text-ink">
+              Tu carrito
+            </h2>
+            <p className="mt-1 text-sm text-on-surface-variant">
+              Revisa tus productos antes de finalizar
+            </p>
+          </div>
           <button
             onClick={onClose}
-            className="text-zinc-900 transition-transform duration-300 hover:rotate-90"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-surface"
             aria-label="Cerrar carrito"
           >
-            <X size={22} strokeWidth={1.5} />
+            <X size={20} strokeWidth={1.75} />
           </button>
         </div>
 
-        <div className="hide-scrollbar grow space-y-8 overflow-y-auto">
+        <div className="hide-scrollbar grow space-y-5 overflow-y-auto">
           {items.length === 0 ? (
             <CartEmptyState onClose={onClose} />
           ) : (
-            <ul className="space-y-8">
+            <ul className="space-y-4">
               {items.map((item) => (
                 <CartLineItem
                   key={item.productId}
@@ -91,9 +91,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
           )}
         </div>
 
-        {items.length > 0 && (
-          <CartDrawerFooter subtotal={subtotal()} onClose={onClose} />
-        )}
+        {items.length > 0 && <CartDrawerFooter subtotal={subtotal()} onClose={onClose} />}
       </aside>
     </>
   )
@@ -102,12 +100,11 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 function CartEmptyState({ onClose }: { onClose: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-16 text-on-surface-variant">
-      <ShoppingBag size={48} strokeWidth={1} />
-      <p className="font-serif text-sm">Tu bolsa está vacía</p>
-      <button
-        onClick={onClose}
-        className="border-b border-zinc-900 pb-0.5 text-[10px] font-semibold uppercase tracking-widest text-zinc-900 transition-opacity hover:opacity-70"
-      >
+      <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-surface text-primary">
+        <ShoppingBag size={28} strokeWidth={1.5} />
+      </span>
+      <p className="text-sm font-medium">Tu carrito está vacío</p>
+      <button onClick={onClose} className="btn-store btn-store--primary">
         Seguir comprando
       </button>
     </div>
@@ -126,63 +123,62 @@ function CartLineItem({
   removeItem: (productId: string) => void
 }) {
   return (
-    <li className="flex gap-4">
-      <div className="relative h-32 w-24 shrink-0 bg-surface-container">
+    <li className="flex gap-3 rounded-2xl bg-white p-3 shadow-card">
+      <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-xl bg-surface">
         {item.image ? (
           <Image
             src={item.image}
             alt={item.title}
             fill
-            className="object-cover grayscale-20 transition-all duration-500 hover:grayscale-0"
-            sizes="96px"
+            className="object-cover"
+            sizes="80px"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <ShoppingBag size={20} className="text-zinc-300" />
+            <ShoppingBag size={20} className="text-outline-variant" />
           </div>
         )}
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col justify-between">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant">
-            {item.brandName}
-          </p>
+          <p className="text-xs font-semibold text-primary">{item.brandName}</p>
           <Link
             href={`/productos/${item.brandSlug}/${item.productSlug}`}
             onClick={onClose}
-            className="mt-1 block line-clamp-2 font-semibold text-zinc-900 transition-colors hover:text-zinc-600"
+            className="mt-0.5 block line-clamp-2 text-sm font-semibold text-ink transition-colors hover:text-primary"
           >
             {item.title}
           </Link>
-          <p className="mt-1 text-sm text-on-surface-variant">Cant: {item.quantity}</p>
         </div>
 
-        <div className="mt-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <div className="flex items-center overflow-hidden rounded-full border border-outline-variant/70 bg-white">
             <button
               onClick={() => updateQty(item.productId, item.quantity - 1)}
-              className="flex h-7 w-7 items-center justify-center border border-outline-variant text-zinc-700 transition-colors hover:border-zinc-900"
+              className="flex h-7 w-7 items-center justify-center text-ink transition-colors hover:bg-surface"
               aria-label="Reducir cantidad"
             >
               <Minus size={12} />
             </button>
-            <span className="w-5 text-center text-sm font-medium">{item.quantity}</span>
+            <span className="w-6 text-center text-sm font-semibold tabular-nums">
+              {item.quantity}
+            </span>
             <button
               onClick={() => updateQty(item.productId, item.quantity + 1)}
-              className="flex h-7 w-7 items-center justify-center border border-outline-variant text-zinc-700 transition-colors hover:border-zinc-900"
+              className="flex h-7 w-7 items-center justify-center text-ink transition-colors hover:bg-surface"
               aria-label="Aumentar cantidad"
             >
               <Plus size={12} />
             </button>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="font-semibold text-zinc-900">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold text-ink">
               {formatCurrency(item.price * item.quantity)}
             </span>
             <button
               onClick={() => removeItem(item.productId)}
-              className="text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant transition-colors hover:text-zinc-900"
+              className="text-xs font-medium text-on-surface-variant transition-colors hover:text-accent"
               aria-label="Eliminar producto"
             >
               Quitar
@@ -202,29 +198,25 @@ function CartDrawerFooter({
   onClose: () => void
 }) {
   return (
-    <div className="mt-8 space-y-6 border-t border-zinc-200 pt-8">
-      <div className="flex justify-between font-serif text-base">
-        <span className="uppercase tracking-wide text-on-surface-variant">Total estimado</span>
-        <span className="font-bold text-zinc-900">{formatCurrency(subtotal)}</span>
+    <div className="mt-6 space-y-4 border-t border-outline-variant/40 pt-6">
+      <div className="flex justify-between text-base">
+        <span className="text-on-surface-variant">Total estimado</span>
+        <span className="text-xl font-bold text-ink">{formatCurrency(subtotal)}</span>
       </div>
-      <Link
-        href="/checkout"
-        onClick={onClose}
-        className="flex w-full items-center justify-center bg-zinc-900 py-4 text-[10px] font-semibold uppercase tracking-widest text-white transition-colors hover:bg-zinc-800"
-      >
+      <Link href="/checkout" onClick={onClose} className="btn-store btn-store--primary w-full">
         Ir al checkout
       </Link>
       <button
         onClick={onClose}
-        className="w-full text-center text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant transition-colors hover:text-zinc-900"
+        className="w-full text-center text-sm font-medium text-on-surface-variant transition-colors hover:text-ink"
       >
         Seguir comprando
       </button>
-      <div className="flex justify-center gap-8 pt-2">
+      <div className="flex justify-center gap-6 pt-1">
         <Link
           href="/nosotros"
           onClick={onClose}
-          className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-500 transition-colors hover:text-zinc-900"
+          className="flex items-center gap-1.5 text-xs font-medium text-on-surface-variant transition-colors hover:text-primary"
         >
           <HelpCircle size={14} />
           Ayuda
@@ -232,7 +224,7 @@ function CartDrawerFooter({
         <Link
           href="/nosotros"
           onClick={onClose}
-          className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-500 transition-colors hover:text-zinc-900"
+          className="flex items-center gap-1.5 text-xs font-medium text-on-surface-variant transition-colors hover:text-primary"
         >
           <Truck size={14} />
           Envíos
@@ -241,4 +233,3 @@ function CartDrawerFooter({
     </div>
   )
 }
-

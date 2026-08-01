@@ -135,45 +135,42 @@ export default async function ProductPage({ params }: Props) {
   )}`
 
   return (
-    <article className="mx-auto max-w-7xl px-6 py-10 md:px-8">
+    <article className="mx-auto max-w-7xl px-5 py-10 md:px-8">
       <nav
         aria-label="Ruta de navegación"
-        className="mb-10 flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant md:mb-12"
+        className="mb-8 flex flex-wrap items-center gap-1.5 text-sm text-on-surface-variant"
       >
-        <Link href="/" className="transition-colors hover:text-on-surface">
+        <Link href="/" className="transition-colors hover:text-primary">
           Inicio
         </Link>
-        <ChevronRight size={12} className="shrink-0" aria-hidden />
+        <ChevronRight size={14} className="shrink-0 opacity-50" aria-hidden />
         {category && !category.brand_id ? (
           <>
-            <Link href="/categorias" className="transition-colors hover:text-on-surface">
+            <Link href="/categorias" className="transition-colors hover:text-primary">
               Categorías
             </Link>
-            <ChevronRight size={12} className="shrink-0" aria-hidden />
-            <Link href={categoryHref!} className="transition-colors hover:text-on-surface">
+            <ChevronRight size={14} className="shrink-0 opacity-50" aria-hidden />
+            <Link href={categoryHref!} className="transition-colors hover:text-primary">
               {category.name}
             </Link>
-            <ChevronRight size={12} className="shrink-0" aria-hidden />
+            <ChevronRight size={14} className="shrink-0 opacity-50" aria-hidden />
           </>
         ) : (
           <>
-            <Link href="/marcas" className="transition-colors hover:text-on-surface">
+            <Link href="/marcas" className="transition-colors hover:text-primary">
               Marcas
             </Link>
-            <ChevronRight size={12} className="shrink-0" aria-hidden />
-            <Link
-              href={`/marcas/${brand.slug}`}
-              className="transition-colors hover:text-on-surface"
-            >
+            <ChevronRight size={14} className="shrink-0 opacity-50" aria-hidden />
+            <Link href={`/marcas/${brand.slug}`} className="transition-colors hover:text-primary">
               {brand.name}
             </Link>
-            <ChevronRight size={12} className="shrink-0" aria-hidden />
+            <ChevronRight size={14} className="shrink-0 opacity-50" aria-hidden />
           </>
         )}
-        <span className="font-bold text-on-surface">{product.name}</span>
+        <span className="font-semibold text-ink">{product.name}</span>
       </nav>
 
-      <section className="mb-16 grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+      <section className="mb-16 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-7">
           <ProductGallery
             variant="editorial"
@@ -183,47 +180,49 @@ export default async function ProductPage({ params }: Props) {
           />
         </div>
 
-        <div className="flex flex-col gap-8 lg:col-span-5 lg:sticky lg:top-32 lg:h-fit lg:gap-10">
+        <div className="flex flex-col gap-7 lg:col-span-5 lg:sticky lg:top-28 lg:h-fit">
           <header>
-            {hasDiscount ? (
-              <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.2em] text-[#e9c176]">
-                Oferta · -{discountPct}%
-              </span>
-            ) : (
+            <div className="mb-3 flex flex-wrap items-center gap-2">
               <Link
                 href={`/marcas/${brand.slug}`}
-                className="mb-4 block text-xs font-semibold uppercase tracking-[0.2em] text-secondary transition-opacity hover:opacity-70"
+                className="rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
               >
                 {brand.name}
               </Link>
-            )}
-            <h1 className="font-serif text-3xl leading-tight text-on-surface md:text-4xl">
+              {hasDiscount && (
+                <span className="-rotate-2 rounded-full bg-accent px-3 py-1 text-xs font-bold text-white shadow-md shadow-accent/30">
+                  Oferta · -{discountPct}%
+                </span>
+              )}
+            </div>
+            <h1 className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-3xl font-bold leading-[1.05] tracking-tight text-ink md:text-4xl lg:text-[2.75rem]">
               {product.name}
             </h1>
             {product.short_description && (
-              <p className="mt-2 font-serif text-lg font-light italic text-on-surface-variant">
+              <p className="mt-3 text-base leading-relaxed text-on-surface-variant">
                 {product.short_description}
               </p>
             )}
-            <div className="mt-6 flex flex-wrap items-baseline gap-4">
-              <span className="font-serif text-2xl text-on-surface">
+            <div className="mt-5 flex flex-wrap items-baseline gap-3">
+              <span className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-4xl font-bold text-primary">
                 {formatCurrency(product.price)}
               </span>
               {hasDiscount && (
-                <span className="text-sm text-on-surface-variant line-through">
+                <span className="text-base text-on-surface-variant line-through">
                   {formatCurrency(product.compare_at_price!)}
                 </span>
               )}
             </div>
             {product.sku && (
-              <p className="mt-3 text-[10px] uppercase tracking-widest text-zinc-400">
-                SKU {product.sku}
-              </p>
+              <p className="mt-2 text-xs text-on-surface-variant">SKU {product.sku}</p>
             )}
             {(category || extraCategories.length > 0) && (
-              <p className="mt-4 flex flex-wrap gap-x-3 gap-y-1 text-xs text-on-surface-variant">
+              <p className="mt-4 flex flex-wrap gap-2">
                 {category && (
-                  <Link href={categoryHref!} className="underline-offset-4 hover:underline">
+                  <Link
+                    href={categoryHref!}
+                    className="rounded-full bg-surface px-3 py-1.5 text-xs font-semibold text-ink transition-colors hover:bg-primary-soft hover:text-primary"
+                  >
                     {category.name}
                   </Link>
                 )}
@@ -232,7 +231,11 @@ export default async function ProductPage({ params }: Props) {
                     ? `/marcas/${brand.slug}?categoria=${c.slug}`
                     : `/categorias/${c.slug}`
                   return (
-                    <Link key={`${c.slug}-${c.brand_id ?? 'g'}`} href={href} className="hover:underline">
+                    <Link
+                      key={`${c.slug}-${c.brand_id ?? 'g'}`}
+                      href={href}
+                      className="rounded-full bg-surface px-3 py-1.5 text-xs font-semibold text-ink transition-colors hover:bg-primary-soft hover:text-primary"
+                    >
                       {c.name}
                     </Link>
                   )
@@ -248,11 +251,11 @@ export default async function ProductPage({ params }: Props) {
           />
 
           {product.description && (
-            <section className="border-t border-outline-variant pt-8 md:pt-10">
-              <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-on-surface">
-                La historia
+            <section className="rounded-3xl bg-white p-6 shadow-card md:p-7">
+              <h2 className="mb-3 text-xs font-bold tracking-[0.18em] text-on-surface-variant uppercase">
+                Descripción
               </h2>
-              <div className="text-base leading-relaxed whitespace-pre-line text-on-surface-variant">
+              <div className="text-sm leading-relaxed whitespace-pre-line text-on-surface-variant md:text-base">
                 {product.description}
               </div>
             </section>
@@ -261,25 +264,23 @@ export default async function ProductPage({ params }: Props) {
       </section>
 
       {(related ?? []).length > 0 && (
-        <section className="border-t border-zinc-100 pt-12 md:pt-16">
-          <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between md:mb-12">
+        <section className="pt-16 md:pt-24">
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between md:mb-10">
             <div>
-              <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-on-surface-variant">
+              <span className="mb-2 inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] text-primary uppercase">
+                <span aria-hidden>✦</span>
                 También te puede interesar
               </span>
-              <h2 className="font-serif text-2xl text-on-surface md:text-[1.75rem]">
+              <h2 className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-3xl font-bold tracking-tight text-ink md:text-4xl">
                 Más de esta marca
               </h2>
             </div>
-            <Link
-              href={`/marcas/${brand.slug}`}
-              className="border-b border-on-surface pb-1 text-xs font-semibold uppercase tracking-widest text-on-surface transition-opacity hover:opacity-70"
-            >
+            <Link href={`/marcas/${brand.slug}`} className="btn-store btn-store--dark self-start">
               Ver todos los productos
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
+          <div className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 md:gap-6">
             {related!.map((p) => (
               <ProductCard
                 key={p.id}

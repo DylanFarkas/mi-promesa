@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type MouseEvent } from 'react'
 import { ShoppingBag, Check } from 'lucide-react'
 import { useCartStore } from '@/stores/cart-store'
 import type { ProductCardData } from './ProductCard'
@@ -21,7 +21,10 @@ export function AddToCartButton({
   const { addItem } = useCartStore()
   const [added, setAdded] = useState(false)
 
-  function handleAddToCart() {
+  function handleAddToCart(e: MouseEvent<HTMLButtonElement>) {
+    e.preventDefault()
+    e.stopPropagation()
+
     addItem({
       productId: product.id,
       quantity,
@@ -40,12 +43,13 @@ export function AddToCartButton({
 
   return (
     <button
+      type="button"
       onClick={handleAddToCart}
       className={[
-        'flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-200',
+        'flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold transition-all duration-300 active:scale-95',
         added
-          ? 'bg-green-600 text-white'
-          : 'bg-on-surface text-white hover:opacity-90',
+          ? 'bg-mint-deep text-white shadow-md shadow-mint-deep/25'
+          : 'bg-ink text-white shadow-md shadow-ink/20 hover:-translate-y-0.5 hover:bg-primary hover:shadow-lg hover:shadow-primary/30',
         fullWidth ? 'w-full' : '',
         className,
       ].join(' ')}

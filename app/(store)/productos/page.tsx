@@ -61,27 +61,28 @@ export default async function ProductosPage({ searchParams }: Props) {
   const activeBrandName = marca ? brandList.find((b) => b.slug === marca)?.name : null
 
   return (
-    <article className="mx-auto max-w-7xl px-6 py-10 md:px-8 md:py-12">
-      <header className="mb-12 grid grid-cols-1 items-end gap-10 border-b border-zinc-100 pb-12 lg:mb-16 lg:grid-cols-2 lg:gap-16 lg:pb-16">
+    <article className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+      <header className="mb-12 grid grid-cols-1 items-end gap-8 lg:mb-16 lg:grid-cols-2 lg:gap-16">
         <div>
-          <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+          <span className="mb-3 inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] text-primary uppercase">
+            <span aria-hidden>✦</span>
             Catálogo
           </span>
-          <h1 className="font-serif text-3xl leading-tight text-on-surface md:text-4xl lg:text-5xl">
-            Todos los productos
+          <h1 className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-4xl font-bold leading-[1.02] tracking-tight text-ink md:text-5xl lg:text-6xl">
+            Todos los <span className="store-squiggle text-primary">productos</span>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-on-surface-variant">
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-on-surface-variant md:text-lg">
             Catálogo completo con los mejores estándares de calidad. Encuentra lo que necesitas en un
             solo lugar.
           </p>
         </div>
-        <aside className="flex flex-col items-start gap-2 lg:items-end">
-          <p className="text-xs font-semibold uppercase tracking-widest text-on-surface-variant">
+        <aside className="flex flex-wrap gap-3 lg:justify-end">
+          <p className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink shadow-card">
             {totalProductCount}{' '}
             {totalProductCount === 1 ? 'producto en catálogo' : 'productos en catálogo'}
           </p>
           {brandsWithCounts.length > 0 && (
-            <p className="text-[10px] uppercase tracking-widest text-zinc-400">
+            <p className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-on-surface-variant shadow-card">
               {brandsWithCounts.length}{' '}
               {brandsWithCounts.length === 1 ? 'marca disponible' : 'marcas disponibles'}
             </p>
@@ -90,9 +91,9 @@ export default async function ProductosPage({ searchParams }: Props) {
       </header>
 
       {totalProductCount === 0 ? (
-        <p className="py-24 text-center text-sm text-zinc-400">Próximamente</p>
+        <p className="py-24 text-center text-sm text-on-surface-variant">Próximamente</p>
       ) : (
-        <div className="flex flex-col gap-10 lg:flex-row lg:gap-12">
+        <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
           <ProductsBrandSidebar
             brands={brandsWithCounts}
             totalCount={totalProductCount}
@@ -100,25 +101,24 @@ export default async function ProductosPage({ searchParams }: Props) {
           />
 
           <section className="min-w-0 flex-1">
-            <div className="mb-8 flex flex-col gap-2 border-b border-zinc-100 pb-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-on-surface-variant">
-                {productList.length}{' '}
-                {productList.length === 1 ? 'resultado' : 'resultados'}
+                {productList.length} {productList.length === 1 ? 'resultado' : 'resultados'}
                 {activeBrandName ? (
-                  <span className="text-on-surface"> · {activeBrandName}</span>
+                  <span className="font-medium text-ink"> · {activeBrandName}</span>
                 ) : null}
               </p>
             </div>
 
             {productList.length === 0 ? (
-              <p className="py-20 text-center text-sm text-zinc-400">
+              <p className="py-20 text-center text-sm text-on-surface-variant">
                 Sin productos para esta marca.{' '}
-                <Link href="/productos" className="underline hover:text-on-surface">
+                <Link href="/productos" className="font-semibold text-primary hover:underline">
                   Ver todos
                 </Link>
               </p>
             ) : (
-              <ul className="grid list-none grid-cols-2 gap-x-6 gap-y-12 p-0 md:grid-cols-3 md:gap-x-6">
+              <ul className="grid list-none grid-cols-2 gap-4 p-0 sm:gap-5 md:grid-cols-3 md:gap-6">
                 {productList.map((product) => (
                   <li key={product.id}>
                     <ProductCard

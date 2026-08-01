@@ -62,7 +62,7 @@ export function StoreHeader() {
     return pathname.startsWith(href.replace('/#novedades', ''))
   }
 
-  const isOverlay = isHome && !scrolled
+  const isOverlay = isHome && !scrolled && !mobileMenuOpen
 
   return (
     <>
@@ -72,29 +72,32 @@ export function StoreHeader() {
           hidden ? 'store-header--hidden' : 'store-header--visible',
           isOverlay
             ? 'border-transparent bg-transparent shadow-none'
-            : 'border-zinc-100 bg-white shadow-sm backdrop-blur-md',
+            : 'border-outline-variant/40 bg-paper/90 shadow-sm backdrop-blur-md',
         ].join(' ')}
       >
-        <div className="mx-auto max-w-7xl px-6 md:px-8">
+        <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="flex h-16 items-center justify-between gap-4 md:h-20">
-            <div className="flex items-center gap-8 md:gap-12">
+            <div className="flex items-center gap-8 md:gap-10">
               <Link
                 href="/"
-                className="shrink-0 font-[family-name:var(--font-noto-serif),Georgia,serif] text-sm font-semibold uppercase tracking-[0.2em] text-zinc-900 md:text-base"
+                className="shrink-0 font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-lg font-bold tracking-tight text-ink md:text-xl"
               >
-                Mi Promesa
+                Mi <span className="text-primary">Promesa</span>
+                <span className="ml-1 text-sm text-primary" aria-hidden>
+                  ✦
+                </span>
               </Link>
 
-              <nav className="hidden items-center gap-8 md:flex">
+              <nav className="hidden items-center gap-1 md:flex">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     className={[
-                      'font-[family-name:var(--font-noto-serif),Georgia,serif] text-sm uppercase tracking-tight transition-colors duration-300',
+                      'rounded-full px-3.5 py-2 text-sm font-semibold transition-colors duration-200',
                       isActive(link.href)
-                        ? 'border-b-2 border-zinc-900 pb-1 text-zinc-900'
-                        : 'text-zinc-500 hover:text-zinc-900',
+                        ? 'bg-primary-soft text-primary'
+                        : 'text-on-surface-variant hover:bg-ink/5 hover:text-ink',
                     ].join(' ')}
                   >
                     {link.label}
@@ -103,24 +106,24 @@ export function StoreHeader() {
               </nav>
             </div>
 
-            <div className="flex items-center gap-4 md:gap-6">
+            <div className="flex items-center gap-2 md:gap-3">
               <Link
                 href="/buscar"
                 className={[
-                  'hidden items-center gap-2 rounded-full px-4 py-2 transition-all lg:flex',
+                  'hidden items-center gap-2 rounded-full px-4 py-2.5 transition-all duration-300 lg:flex',
                   isOverlay
-                    ? 'bg-white/50 backdrop-blur-sm hover:bg-white/70'
-                    : 'bg-white hover:bg-[#e8e8e8]',
+                    ? 'bg-white shadow-card hover:-translate-y-0.5 hover:shadow-lift'
+                    : 'bg-surface hover:bg-white hover:shadow-card',
                 ].join(' ')}
                 aria-label="Buscar"
               >
-                <Search size={16} className="text-zinc-400" />
-                <span className="text-sm text-zinc-400">Buscar...</span>
+                <Search size={16} className="text-primary" />
+                <span className="text-sm text-on-surface-variant">Buscar productos...</span>
               </Link>
 
               <Link
                 href="/buscar"
-                className="flex h-9 w-9 items-center justify-center text-zinc-900 lg:hidden"
+                className="flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5 lg:hidden"
                 aria-label="Buscar"
               >
                 <Search size={18} />
@@ -128,12 +131,12 @@ export function StoreHeader() {
 
               <button
                 onClick={() => setCartOpen(true)}
-                className="relative flex h-9 w-9 items-center justify-center text-zinc-900 transition-transform active:scale-95"
+                className="relative flex h-10 w-10 items-center justify-center rounded-full text-ink transition-all hover:bg-ink/5 active:scale-95"
                 aria-label="Abrir carrito"
               >
                 <ShoppingBag size={18} />
                 {hasHydrated && totalItems() > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-on-surface px-1 text-[10px] font-bold text-white">
+                  <span className="absolute -top-0.5 -right-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-white shadow-sm">
                     {totalItems() > 9 ? '9+' : totalItems()}
                   </span>
                 )}
@@ -141,7 +144,7 @@ export function StoreHeader() {
 
               <button
                 onClick={() => setMobileMenuOpen((v) => !v)}
-                className="flex h-9 w-9 items-center justify-center text-zinc-900 md:hidden"
+                className="flex h-10 w-10 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5 md:hidden"
                 aria-label="Menú"
               >
                 {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
@@ -151,17 +154,17 @@ export function StoreHeader() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="border-t border-zinc-100 bg-white px-6 pb-4 md:hidden">
-            <nav className="flex flex-col gap-1 pt-2">
+          <div className="border-t border-outline-variant/40 bg-paper px-5 pb-5 md:hidden">
+            <nav className="flex flex-col gap-1 pt-3">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={[
-                    'rounded px-3 py-2.5 font-[family-name:var(--font-noto-serif),Georgia,serif] text-sm uppercase tracking-tight transition-colors',
+                    'rounded-xl px-4 py-3 text-sm font-medium transition-colors',
                     isActive(link.href)
-                      ? 'bg-surface-container-low text-zinc-900'
-                      : 'text-zinc-600 hover:bg-surface',
+                      ? 'bg-primary-soft text-primary'
+                      : 'text-on-surface-variant hover:bg-surface hover:text-ink',
                   ].join(' ')}
                 >
                   {link.label}

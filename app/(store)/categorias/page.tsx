@@ -42,24 +42,25 @@ export default async function CategoriasPage() {
   )
 
   return (
-    <article className="mx-auto max-w-7xl px-6 py-12 md:px-8 md:py-16">
-      <header className="mb-12 border-b border-zinc-100 pb-10 md:mb-16 md:pb-14">
-        <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+    <article className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+      <header className="mb-12 md:mb-16">
+        <span className="mb-3 inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] text-primary uppercase">
+          <span aria-hidden>✦</span>
           Navegar
         </span>
-        <h1 className="font-serif text-3xl text-on-surface md:text-4xl lg:text-[2.75rem] lg:leading-tight">
-          Categorías
+        <h1 className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-4xl font-bold leading-[1.02] tracking-tight text-ink md:text-5xl lg:text-6xl">
+          Cada categoría, <span className="store-squiggle text-primary">su propio mundo</span>
         </h1>
-        <p className="mt-4 max-w-xl text-base leading-relaxed text-on-surface-variant">
+        <p className="mt-5 max-w-xl text-base leading-relaxed text-on-surface-variant">
           Explora nuestros productos organizados por tipo. Cada categoría reúne lo mejor de nuestro
           catálogo completo.
         </p>
       </header>
 
       {categoriesWithMeta.length === 0 ? (
-        <p className="py-24 text-center text-sm text-zinc-400">Próximamente</p>
+        <p className="py-24 text-center text-sm text-on-surface-variant">Próximamente</p>
       ) : (
-        <ul className="grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        <ul className="grid list-none grid-cols-1 gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {categoriesWithMeta.map((cat) => (
             <li key={cat.id}>
               <CategoryCard

@@ -28,24 +28,25 @@ export default async function MarcasPage() {
   }
 
   return (
-    <article className="mx-auto max-w-7xl px-6 py-12 md:px-8 md:py-16">
-      <header className="mb-6 border-b border-zinc-100 pb-10 md:mb-16 md:pb-14">
-        <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-secondary">
+    <article className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+      <header className="mb-12 md:mb-16">
+        <span className="mb-3 inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] text-primary uppercase">
+          <span aria-hidden>✦</span>
           Catálogo
         </span>
-        <h1 className="font-serif text-3xl text-on-surface md:text-4xl lg:text-[2.75rem] lg:leading-tight">
-          Nuestras marcas
+        <h1 className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-4xl font-bold leading-[1.02] tracking-tight text-ink md:text-5xl lg:text-6xl">
+          Marcas en las que <span className="store-squiggle text-primary">confiamos</span>
         </h1>
-        <p className="mt-4 max-w-xl text-base leading-relaxed text-on-surface-variant">
+        <p className="mt-5 max-w-xl text-base leading-relaxed text-on-surface-variant">
           Trabajamos con marcas reconocidas y de calidad comprobada, listas para llegar a tu hogar o
           negocio.
         </p>
       </header>
 
       {brandList.length === 0 ? (
-        <p className="py-24 text-center text-sm text-zinc-400">Próximamente</p>
+        <p className="py-24 text-center text-sm text-on-surface-variant">Próximamente</p>
       ) : (
-        <ul className="grid list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        <ul className="grid list-none grid-cols-1 gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {brandList.map((brand) => (
             <li key={brand.id}>
               <BrandCard

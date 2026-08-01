@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import {
   getProductImageFallbacks,
@@ -10,6 +11,7 @@ import { BrandShowcase } from '@/components/store/home/BrandShowcase'
 import { CategoryShowcase } from '@/components/store/home/CategoryShowcase'
 import { BenefitsStrip } from '@/components/store/home/BenefitsStrip'
 import { FeatureSection } from '@/components/store/FeatureSection'
+import { Reveal } from '@/components/store/Reveal'
 
 const JOURNAL_IMAGE =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuDX7wEu7jw27VINmnpIT3sranTNIc0ZFQcck2dgGfN_I_QMJhs9-wxQwWahhkJ8LH8NLdV-DBJfQ90b5wNGMhN-eZeRREfEJR5SqirRHqNWbKt48Oep_NCYBkOuj2CppeuGWV1GyQHP7sGxgoTUdLMyuGk2p0HNPXIC3Fz0ivFtNi4I8A95GIZ6B6_lE9zTP7SAikgepSY2SDIsnfq8TufYYtDMzZ2LOukdIZHl4-tpGeE4Wyn3BCCSKuLuz-OjSH1_JQYuJ2QUE-I'
@@ -65,61 +67,77 @@ export default async function HomePage() {
 
   return (
     <>
-      <HomeHero />
+      <HomeHero categories={categories} />
 
-      <BrandShowcase brands={brands} />
+      <Reveal>
+        <BrandShowcase brands={brands} />
+      </Reveal>
 
-      <CategoryShowcase categories={categories} />
+      <Reveal>
+        <CategoryShowcase categories={categories} />
+      </Reveal>
 
       {products.length > 0 && (
-        <section id="novedades" className="bg-white py-16 md:py-20">
-          <div className="mx-auto max-w-7xl px-6 md:px-8">
-            <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between md:mb-16">
+        <section id="novedades" className="bg-white py-20 md:py-28">
+          <div className="mx-auto max-w-7xl px-5 md:px-8">
+            <div className="mb-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between md:mb-14">
               <div>
-                <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
+                <span className="mb-3 inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] text-primary uppercase">
+                  <span aria-hidden>✦</span>
                   Lo más nuevo
                 </span>
-                <h2 className="font-[family-name:var(--font-noto-serif),Georgia,serif] text-2xl text-on-surface md:text-[1.75rem]">
-                  Recién llegados al catálogo
+                <h2 className="font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-4xl font-bold tracking-tight text-ink md:text-5xl">
+                  Recién llegados
                 </h2>
               </div>
-              <Link
-                href="/productos"
-                className="border-b border-on-surface pb-1 text-xs font-semibold uppercase tracking-widest text-on-surface transition-opacity hover:opacity-70"
-              >
+              <Link href="/productos" className="btn-store btn-store--dark self-start">
                 Ver todo el catálogo
+                <ArrowRight size={16} aria-hidden />
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-              {products.map((product) => (
-                <ProductCard
+            {/* Grid dinámico: el primer producto ocupa el doble de espacio */}
+            <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4 lg:gap-6">
+              {products.map((product, index) => (
+                <div
                   key={product.id}
-                  variant="editorial"
-                  product={{
-                    ...product,
-                    brand: product.brand as unknown as { name: string; slug: string },
-                    category: product.category as unknown as { name: string; slug: string } | null,
-                  }}
-                />
+                  className={index === 0 ? 'col-span-2 row-span-2' : undefined}
+                >
+                  <ProductCard
+                    variant="editorial"
+                    showNewBadge
+                    product={{
+                      ...product,
+                      brand: product.brand as unknown as { name: string; slug: string },
+                      category: product.category as unknown as { name: string; slug: string } | null,
+                    }}
+                  />
+                </div>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      <BenefitsStrip />
+      <Reveal>
+        <BenefitsStrip />
+      </Reveal>
 
+      {/* Marcas seleccionadas
       <FeatureSection
         variant="overlay"
         align="center-left"
-        height="screen"
-        scrim="strong"
+        height="lg"
+        scrim="soft"
         eyebrow="Marcas seleccionadas"
         title="Lo mejor de cada marca, en un solo lugar"
         description="Trabajamos directamente con las marcas que distribuimos para garantizar productos originales y una experiencia de compra cuidada de principio a fin."
         cta={{ label: 'Explorar marcas', href: '/marcas', variant: 'solid' }}
-        media={{ src: '/images/home-hero.png', alt: 'Selección de marcas y productos destacados de Mi Promesa' }}
+        media={{
+          src: '/images/home-hero.png',
+          alt: 'Selección de marcas y productos destacados de Mi Promesa',
+          position: '70% center',
+        }}
       />
 
       <FeatureSection
@@ -128,9 +146,9 @@ export default async function HomePage() {
         eyebrow="Nuestra historia"
         title="Calidad y confianza en cada elección"
         description="En Mi Promesa distribuimos productos y marcas que aportan valor a tu día a día. Nuestro compromiso es ofrecer variedad, calidad y una atención cercana para que encuentres todo lo que necesitas en un solo lugar."
-        cta={{ label: 'Conocer más', href: '/nosotros', variant: 'outline'}}
+        cta={{ label: 'Conocer más', href: '/nosotros', variant: 'outline' }}
         media={{ src: JOURNAL_IMAGE, alt: 'Variedad de productos disponibles en Mi Promesa' }}
-      />
+      />*/}
     </>
   )
 }

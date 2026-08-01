@@ -111,41 +111,41 @@ export type FeatureSectionProps = SplitProps | OverlayProps
 
 const toneText: Record<FeatureTone, { eyebrow: string; title: string; body: string; rule: string }> = {
   light: {
-    eyebrow: 'text-secondary',
-    title: 'text-on-surface',
+    eyebrow: 'text-primary',
+    title: 'text-ink',
     body: 'text-on-surface-variant',
-    rule: 'bg-secondary/60',
+    rule: 'bg-primary/50',
   },
   dark: {
-    eyebrow: 'text-secondary-container',
+    eyebrow: 'text-secondary',
     title: 'text-white',
-    body: 'text-white/75',
-    rule: 'bg-secondary-container/60',
+    body: 'text-white/80',
+    rule: 'bg-secondary/70',
   },
 }
 
 function headingClasses(variant: 'serif' | 'display', isOverlay: boolean) {
+  const displayFont =
+    'font-[family-name:var(--font-store-display-face),system-ui,sans-serif] font-bold tracking-tight'
   if (variant === 'display') {
     return isOverlay
-      ? 'font-semibold uppercase leading-[1.02] tracking-tight text-3xl sm:text-4xl md:text-5xl lg:text-6xl'
-      : 'font-semibold uppercase leading-[1.05] tracking-tight text-3xl md:text-4xl'
+      ? `${displayFont} leading-[1.05] text-3xl sm:text-4xl md:text-5xl lg:text-6xl`
+      : `${displayFont} leading-[1.08] text-3xl md:text-4xl`
   }
-  // serif
   return isOverlay
-    ? 'font-serif leading-[1.1] tracking-tight text-3xl sm:text-4xl md:text-5xl'
-    : 'font-serif leading-[1.15] text-2xl md:text-[1.85rem]'
+    ? `${displayFont} leading-[1.1] text-3xl sm:text-4xl md:text-5xl`
+    : `${displayFont} leading-[1.15] text-2xl md:text-[2rem]`
 }
 
 function Cta({ cta, tone }: { cta: FeatureCta; tone: FeatureTone }) {
   const variant = cta.variant ?? 'solid'
-  const base = 'inline-flex items-center justify-center text-xs font-semibold uppercase transition'
 
   if (variant === 'underline') {
-    const color = tone === 'dark' ? 'border-white text-white' : 'border-on-surface text-on-surface'
+    const color = tone === 'dark' ? 'border-white text-white' : 'border-ink text-ink'
     return (
       <Link
         href={cta.href}
-        className={`${base} ${color} border-b pb-1 tracking-widest hover:opacity-70`}
+        className={`inline-flex items-center text-sm font-semibold transition-all ${color} border-b pb-1 hover:opacity-70`}
       >
         {cta.label}
       </Link>
@@ -153,27 +153,21 @@ function Cta({ cta, tone }: { cta: FeatureCta; tone: FeatureTone }) {
   }
 
   if (variant === 'outline') {
-    const color =
-      tone === 'dark'
-        ? 'border-white/50 text-white hover:bg-white hover:text-on-surface'
-        : 'border-on-surface/40 text-on-surface hover:bg-on-surface hover:text-white'
     return (
       <Link
         href={cta.href}
-        className={`${base} ${color} rounded-full border px-9 py-3.5 tracking-[0.2em]`}
+        className={`btn-store ${tone === 'dark' ? 'btn-store--ghost-light' : 'btn-store--ghost'}`}
       >
         {cta.label}
       </Link>
     )
   }
 
-  // solid
-  const color =
-    tone === 'dark'
-      ? 'bg-white text-on-surface hover:bg-white/90'
-      : 'bg-on-surface text-white hover:opacity-90'
   return (
-    <Link href={cta.href} className={`${base} ${color} px-10 py-4 tracking-[0.2em]`}>
+    <Link
+      href={cta.href}
+      className={`btn-store ${tone === 'dark' ? 'btn-store--yellow' : 'btn-store--primary'}`}
+    >
       {cta.label}
     </Link>
   )
@@ -206,7 +200,7 @@ function FeatureContent({
     <div className={`space-y-5 md:space-y-6 ${centered ? 'text-center' : 'text-left'}`}>
       {eyebrow ? (
         <span
-          className={`flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.25em] ${colors.eyebrow} ${
+          className={`flex items-center gap-3 text-sm font-semibold ${colors.eyebrow} ${
             centered ? 'justify-center' : ''
           }`}
         >
@@ -254,23 +248,40 @@ function SplitSection({
   className = '',
 }: SplitProps) {
   return (
-    <section id={id} className={`${background ?? ''} py-16 md:py-24 ${className}`}>
-      <div className="mx-auto max-w-7xl px-6 md:px-8">
+    <section id={id} className={`${background ?? 'bg-paper'} py-20 md:py-28 ${className}`}>
+      <div className="mx-auto max-w-7xl px-5 md:px-8">
         <div
           className={`flex flex-col items-center gap-10 md:gap-16 ${
             mediaSide === 'right' ? 'md:flex-row-reverse' : 'md:flex-row'
           }`}
         >
-          <div className="group relative aspect-4/3 w-full flex-[1.15] overflow-hidden md:aspect-3/2">
-            <Image
-              src={media.src}
-              alt={media.alt}
-              fill
-              priority={media.priority}
-              className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
-              style={media.position ? { objectPosition: media.position } : undefined}
-              sizes="(max-width: 768px) 100vw, 55vw"
-            />
+          <div className="relative w-full flex-[1.15]">
+            <div
+              className={`group relative aspect-4/3 w-full overflow-hidden shadow-float md:aspect-3/2 ${
+                mediaSide === 'right'
+                  ? 'rounded-[2.5rem] md:rounded-tr-[7rem]'
+                  : 'rounded-[2.5rem] md:rounded-tl-[7rem]'
+              }`}
+            >
+              <Image
+                src={media.src}
+                alt={media.alt}
+                fill
+                priority={media.priority}
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                style={media.position ? { objectPosition: media.position } : undefined}
+                sizes="(max-width: 768px) 100vw, 55vw"
+              />
+            </div>
+            {/* Destello de marca superpuesto a la imagen */}
+            <span
+              className={`absolute -bottom-5 flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-xl text-ink shadow-card ${
+                mediaSide === 'right' ? '-left-3 md:-left-5' : '-right-3 md:-right-5'
+              }`}
+              aria-hidden
+            >
+              ✦
+            </span>
           </div>
 
           <div className="w-full flex-1">
@@ -315,19 +326,19 @@ const overlayHeight: Record<NonNullable<OverlayProps['height']>, string> = {
 
 // Clases estáticas completas: Tailwind necesita verlas literalmente para generarlas.
 const SCRIM_SOFT = {
-  left: 'bg-linear-to-r from-black/55 via-black/15 to-transparent',
-  right: 'bg-linear-to-l from-black/55 via-black/15 to-transparent',
-  top: 'bg-linear-to-b from-black/55 via-black/15 to-transparent',
-  bottom: 'bg-linear-to-t from-black/55 via-black/15 to-transparent',
-  center: 'bg-black/25',
+  left: 'bg-linear-to-r from-ink/70 via-ink/25 to-transparent',
+  right: 'bg-linear-to-l from-ink/70 via-ink/25 to-transparent',
+  top: 'bg-linear-to-b from-ink/70 via-ink/25 to-transparent',
+  bottom: 'bg-linear-to-t from-ink/70 via-ink/25 to-transparent',
+  center: 'bg-ink/35',
 } as const
 
 const SCRIM_STRONG = {
-  left: 'bg-linear-to-r from-black/80 via-black/35 to-transparent',
-  right: 'bg-linear-to-l from-black/80 via-black/35 to-transparent',
-  top: 'bg-linear-to-b from-black/80 via-black/35 to-transparent',
-  bottom: 'bg-linear-to-t from-black/80 via-black/35 to-transparent',
-  center: 'bg-black/45',
+  left: 'bg-linear-to-r from-ink/88 via-ink/45 to-transparent',
+  right: 'bg-linear-to-l from-ink/88 via-ink/45 to-transparent',
+  top: 'bg-linear-to-b from-ink/88 via-ink/45 to-transparent',
+  bottom: 'bg-linear-to-t from-ink/88 via-ink/45 to-transparent',
+  center: 'bg-ink/55',
 } as const
 
 function scrimDirection(align: OverlayAlign): keyof typeof SCRIM_SOFT {
@@ -392,9 +403,6 @@ function OverlaySection({
   )
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                  Export                                    */
-/* -------------------------------------------------------------------------- */
 
 export function FeatureSection(props: FeatureSectionProps) {
   if (props.variant === 'overlay') {

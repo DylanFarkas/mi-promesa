@@ -21,27 +21,25 @@ export function ProductActions({
 
   if (variant === 'editorial') {
     return (
-      <section className="flex flex-col gap-8">
-        <fieldset className="flex flex-col gap-4 border-0 p-0">
-          <legend className="text-xs font-semibold uppercase tracking-widest text-on-surface">
+      <section className="flex flex-col gap-6">
+        <fieldset className="flex flex-col gap-3 border-0 p-0">
+          <legend className="text-xs font-bold tracking-[0.18em] text-on-surface-variant uppercase">
             Cantidad
           </legend>
-          <div className="flex w-fit items-center border border-outline-variant">
+          <div className="flex w-fit items-center overflow-hidden rounded-full bg-white shadow-card">
             <button
               type="button"
               onClick={() => setQty((q) => Math.max(1, q - 1))}
-              className="p-4 text-on-surface transition-colors hover:bg-surface-container-low"
+              className="p-3.5 text-ink transition-colors hover:bg-surface"
               aria-label="Disminuir cantidad"
             >
               <Minus size={14} />
             </button>
-            <span className="min-w-12 px-4 text-center text-xs font-semibold uppercase tracking-widest">
-              {qty}
-            </span>
+            <span className="min-w-10 px-3 text-center text-sm font-bold tabular-nums">{qty}</span>
             <button
               type="button"
               onClick={() => setQty((q) => q + 1)}
-              className="p-4 text-on-surface transition-colors hover:bg-surface-container-low"
+              className="p-3.5 text-ink transition-colors hover:bg-surface"
               aria-label="Aumentar cantidad"
             >
               <Plus size={14} />
@@ -49,21 +47,21 @@ export function ProductActions({
           </div>
         </fieldset>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           <AddToCartButton
             product={product}
             quantity={qty}
             fullWidth
-            className="rounded-sm! py-6 text-xs font-semibold uppercase tracking-[0.2em]"
+            className="rounded-full! py-4 text-sm font-semibold"
           />
           {whatsAppHref && (
             <Link
               href={whatsAppHref}
               target="_blank"
               rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-3 rounded-sm border border-on-surface py-6 text-xs font-semibold uppercase tracking-[0.2em] text-on-surface transition-colors hover:bg-surface-container-low"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-mint py-4 text-sm font-bold text-mint-deep transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-mint-deep/20"
             >
-              <MessageCircle size={18} strokeWidth={1.5} />
+              <MessageCircle size={18} strokeWidth={2} />
               Pedir por WhatsApp
             </Link>
           )}
@@ -75,21 +73,21 @@ export function ProductActions({
   return (
     <section className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
-        <span className="text-sm text-stone-500">Cantidad</span>
-        <div className="flex items-center overflow-hidden rounded-full border border-stone-200">
+        <span className="text-sm text-on-surface-variant">Cantidad</span>
+        <div className="flex items-center overflow-hidden rounded-full border border-outline-variant">
           <button
             type="button"
             onClick={() => setQty((q) => Math.max(1, q - 1))}
-            className="flex h-9 w-9 items-center justify-center text-stone-600 transition-colors hover:bg-stone-50"
+            className="flex h-9 w-9 items-center justify-center text-ink transition-colors hover:bg-surface"
             aria-label="Disminuir"
           >
             <Minus size={14} />
           </button>
-          <span className="w-8 text-center text-sm font-semibold text-stone-800">{qty}</span>
+          <span className="w-8 text-center text-sm font-semibold text-ink">{qty}</span>
           <button
             type="button"
             onClick={() => setQty((q) => q + 1)}
-            className="flex h-9 w-9 items-center justify-center text-stone-600 transition-colors hover:bg-stone-50"
+            className="flex h-9 w-9 items-center justify-center text-ink transition-colors hover:bg-surface"
             aria-label="Aumentar"
           >
             <Plus size={14} />
