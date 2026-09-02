@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Package } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import {
   fetchProductIdsWithAdditionalCategory,
@@ -10,6 +10,7 @@ import {
 import { getCategoryBrandCounts } from '@/lib/store/category-counts'
 import { CategoryBrandSidebar } from '@/components/store/categories/CategoryBrandSidebar'
 import { ProductCard } from '@/components/store/ProductCard'
+import { StoreEmptyState } from '@/components/store/StoreEmptyState'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -154,15 +155,15 @@ export default async function CategoriaPage({ params, searchParams }: Props) {
           </div>
 
           {productList.length === 0 ? (
-            <p className="py-20 text-center text-sm text-on-surface-variant">
-              Sin productos en esta categoría.{' '}
-              <Link
-                href={`/categorias/${slug}`}
-                className="font-semibold text-primary hover:underline"
-              >
-                Ver todos
-              </Link>
-            </p>
+            <StoreEmptyState
+              icon={Package}
+              title="Sin productos con este filtro"
+              description="Prueba otra marca o mira toda la categoría."
+              href={`/categorias/${slug}`}
+              label="Ver todos"
+              tone="primary"
+              className="py-8"
+            />
           ) : (
             <ul className="grid list-none grid-cols-2 gap-4 p-0 sm:gap-5 md:grid-cols-3 md:gap-6">
               {productList.map((product) => (

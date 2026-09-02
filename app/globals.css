@@ -92,6 +92,8 @@ body {
 }
 
 .store-header {
+  /* Evita el salto al bloquear scroll (p. ej. carrito): el padding del body no afecta a fixed */
+  padding-right: var(--scrollbar-compensation, 0px);
   transition:
     transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
     background-color 0.3s ease,
@@ -196,23 +198,32 @@ body {
 }
 
 /* ------------------------------------------------------------------ */
-/* Stickers de promesa — juguetones, con elegancia editorial          */
+/* Stickers — ADN reutilizable (offset + face)                        */
 /* ------------------------------------------------------------------ */
 
-/* Formas suaves con una esquina “con carácter” */
+/* Formas con carácter (trío de promesas) */
+.store-sticker-a,
 .promise-sticker-a {
   border-radius: 2.75rem 2.75rem 1.15rem 2.75rem;
 }
 
+.store-sticker-b,
 .promise-sticker-b {
   border-radius: 1.15rem 2.75rem 2.75rem 2.75rem;
 }
 
+.store-sticker-c,
 .promise-sticker-c {
   border-radius: 2.75rem 1.15rem 2.75rem 2.75rem;
 }
 
+/* Radius fijo para empty states / confirmación */
+.store-sticker-soft {
+  border-radius: 2rem;
+}
+
 /* Capa de color detrás: el truco divertido sin perder pulido */
+.store-sticker-back,
 .promise-sticker-back {
   position: absolute;
   inset: 0;
@@ -221,10 +232,28 @@ body {
   pointer-events: none;
 }
 
+.store-sticker--sm .store-sticker-back,
+.store-sticker-back--sm {
+  translate: 7px 7px;
+}
+
+/* Offset ligero para cards secundarias (no sticker completo) */
+.store-sticker-back--micro {
+  translate: 7px 7px;
+}
+
+.group:hover .store-sticker-back,
 .group:hover .promise-sticker-back {
   translate: 14px 14px;
 }
 
+.group.store-sticker--sm:hover .store-sticker-back,
+.group:hover .store-sticker-back--sm,
+.group:hover .store-sticker-back--micro {
+  translate: 10px 10px;
+}
+
+.store-sticker-face,
 .promise-sticker-face {
   position: relative;
   transition:
@@ -232,8 +261,13 @@ body {
     box-shadow 0.45s ease;
 }
 
+.group:hover .store-sticker-face,
 .group:hover .promise-sticker-face {
   translate: -3px -5px;
+}
+
+.group.store-sticker--sm:hover .store-sticker-face {
+  translate: -2px -3px;
 }
 
 /* Wordmark de atmósfera en la banda de promesas */
@@ -384,8 +418,12 @@ body {
     transform: none;
   }
 
+  .store-sticker-back,
+  .store-sticker-face,
   .promise-sticker-back,
   .promise-sticker-face,
+  .group:hover .store-sticker-back,
+  .group:hover .store-sticker-face,
   .group:hover .promise-sticker-back,
   .group:hover .promise-sticker-face {
     transition: none;

@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { ArrowUpRight, MessageCircle, ShieldCheck, Truck } from 'lucide-react'
+import { StoreSticker, type StoreStickerShape } from '@/components/store/StoreSticker'
 
 const WHATSAPP_HREF = 'https://wa.me/521xxxxxxxxxx'
 
@@ -11,7 +11,7 @@ const PROMISES = [
     description: 'Coordinamos tu entrega con atención personalizada en cada pedido.',
     href: '/productos',
     label: 'Ver catálogo',
-    shape: 'promise-sticker-a',
+    shape: 'a' as StoreStickerShape,
     face: 'bg-primary text-white',
     back: 'bg-secondary',
     iconWell: 'bg-secondary text-ink',
@@ -26,7 +26,7 @@ const PROMISES = [
     description: 'Productos auténticos, directo de las marcas que distribuimos.',
     href: '/marcas',
     label: 'Ver marcas',
-    shape: 'promise-sticker-b',
+    shape: 'b' as StoreStickerShape,
     face: 'bg-sand text-ink',
     back: 'bg-primary',
     iconWell: 'bg-ink text-secondary',
@@ -42,7 +42,7 @@ const PROMISES = [
     href: WHATSAPP_HREF,
     label: 'Abrir WhatsApp',
     external: true,
-    shape: 'promise-sticker-c',
+    shape: 'c' as StoreStickerShape,
     face: 'bg-secondary text-ink',
     back: 'bg-ink',
     iconWell: 'bg-ink text-secondary',
@@ -86,13 +86,22 @@ export function BenefitsStrip() {
           </p>
         </div>
 
-        {/* Stickers: forma suave + capa de color detrás */}
-        <div className="relative z-10 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-7 md:items-start md:pt-4">
+        <div className="relative z-10 grid grid-cols-1 gap-8 md:grid-cols-3 md:items-start md:gap-7 md:pt-4">
           {PROMISES.map((promise) => {
             const Icon = promise.icon
 
-            const content = (
-              <>
+            return (
+              <StoreSticker
+                key={promise.index}
+                size="lg"
+                shape={promise.shape}
+                back={promise.back}
+                face={promise.face}
+                href={promise.href}
+                external={'external' in promise && promise.external}
+                className={promise.lift}
+                faceClassName="min-h-[290px] p-7 md:min-h-[350px] md:p-8"
+              >
                 <div className="flex items-start justify-between gap-4">
                   <span
                     className={`flex h-12 w-12 items-center justify-center rounded-full shadow-md transition-transform duration-500 ease-out group-hover:scale-110 group-hover:rotate-[-8deg] ${promise.iconWell}`}
@@ -124,43 +133,7 @@ export function BenefitsStrip() {
                     />
                   </span>
                 </div>
-              </>
-            )
-
-            const faceClass = [
-              'promise-sticker-face flex min-h-[290px] flex-col overflow-hidden p-7 md:min-h-[350px] md:p-8',
-              'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30',
-              promise.shape,
-              promise.face,
-            ].join(' ')
-
-            const card = (
-              <>
-                <span
-                  className={`promise-sticker-back ${promise.shape} ${promise.back}`}
-                  aria-hidden
-                />
-                {'external' in promise && promise.external ? (
-                  <a
-                    href={promise.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={faceClass}
-                  >
-                    {content}
-                  </a>
-                ) : (
-                  <Link href={promise.href} className={faceClass}>
-                    {content}
-                  </Link>
-                )}
-              </>
-            )
-
-            return (
-              <div key={promise.index} className={`group relative ${promise.lift}`}>
-                {card}
-              </div>
+              </StoreSticker>
             )
           })}
         </div>

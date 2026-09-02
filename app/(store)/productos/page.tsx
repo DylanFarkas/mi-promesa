@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Package } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { ProductCard } from '@/components/store/ProductCard'
 import { ProductsBrandSidebar } from '@/components/store/products/ProductsBrandSidebar'
+import { StoreEmptyState } from '@/components/store/StoreEmptyState'
 
 export const metadata: Metadata = {
   title: 'Productos',
@@ -91,7 +92,15 @@ export default async function ProductosPage({ searchParams }: Props) {
       </header>
 
       {totalProductCount === 0 ? (
-        <p className="py-24 text-center text-sm text-on-surface-variant">Próximamente</p>
+        <StoreEmptyState
+          icon={Package}
+          title="Catálogo en camino"
+          description="Pronto encontrarás aquí todos nuestros productos."
+          href="/marcas"
+          label="Ver marcas"
+          tone="sand"
+          className="py-16"
+        />
       ) : (
         <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
           <ProductsBrandSidebar
@@ -111,12 +120,15 @@ export default async function ProductosPage({ searchParams }: Props) {
             </div>
 
             {productList.length === 0 ? (
-              <p className="py-20 text-center text-sm text-on-surface-variant">
-                Sin productos para esta marca.{' '}
-                <Link href="/productos" className="font-semibold text-primary hover:underline">
-                  Ver todos
-                </Link>
-              </p>
+              <StoreEmptyState
+                icon={Package}
+                title="Sin productos para esta marca"
+                description="Prueba con otra marca o explora todo el catálogo."
+                href="/productos"
+                label="Ver todos"
+                tone="primary"
+                className="py-8"
+              />
             ) : (
               <ul className="grid list-none grid-cols-2 gap-4 p-0 sm:gap-5 md:grid-cols-3 md:gap-6">
                 {productList.map((product) => (

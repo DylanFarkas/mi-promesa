@@ -5,7 +5,9 @@ import {
   getProductImageFallback,
   resolveCategoryImageUrl,
 } from '@/lib/store/category-image'
+import { LayoutGrid } from 'lucide-react'
 import { CategoryCard } from '@/components/store/CategoryCard'
+import { StoreEmptyState } from '@/components/store/StoreEmptyState'
 
 export const metadata: Metadata = {
   title: 'Categorías',
@@ -58,7 +60,15 @@ export default async function CategoriasPage() {
       </header>
 
       {categoriesWithMeta.length === 0 ? (
-        <p className="py-24 text-center text-sm text-on-surface-variant">Próximamente</p>
+        <StoreEmptyState
+          icon={LayoutGrid}
+          title="Categorías en camino"
+          description="Pronto podrás explorar el catálogo por categoría."
+          href="/productos"
+          label="Ver productos"
+          tone="sand"
+          className="py-16"
+        />
       ) : (
         <ul className="grid list-none grid-cols-1 gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {categoriesWithMeta.map((cat) => (

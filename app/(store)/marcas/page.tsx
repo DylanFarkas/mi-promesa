@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
+import { Sparkles } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { BrandCard } from '@/components/store/BrandCard'
+import { StoreEmptyState } from '@/components/store/StoreEmptyState'
 
 export const metadata: Metadata = {
   title: 'Marcas',
@@ -44,7 +46,15 @@ export default async function MarcasPage() {
       </header>
 
       {brandList.length === 0 ? (
-        <p className="py-24 text-center text-sm text-on-surface-variant">Próximamente</p>
+        <StoreEmptyState
+          icon={Sparkles}
+          title="Marcas en camino"
+          description="Pronto verás aquí las marcas que distribuimos."
+          href="/productos"
+          label="Ver productos"
+          tone="sand"
+          className="py-16"
+        />
       ) : (
         <ul className="grid list-none grid-cols-1 gap-5 p-0 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {brandList.map((brand) => (

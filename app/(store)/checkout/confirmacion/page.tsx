@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { CheckCircle, MessageCircle, Home } from 'lucide-react'
+import { StoreSticker } from '@/components/store/StoreSticker'
 
 export const metadata: Metadata = {
   title: 'Pedido confirmado',
@@ -10,6 +11,33 @@ interface Props {
   searchParams: Promise<{ order?: string }>
 }
 
+const STEPS = [
+  {
+    step: '01',
+    title: 'Pedido registrado',
+    desc: 'Tu pedido quedó guardado en nuestro sistema.',
+    face: 'bg-primary text-white',
+    back: 'bg-secondary',
+    meta: 'text-white/65',
+  },
+  {
+    step: '02',
+    title: 'Te contactamos',
+    desc: 'Te escribimos por WhatsApp para confirmar.',
+    face: 'bg-sand text-ink',
+    back: 'bg-primary',
+    meta: 'text-ink/55',
+  },
+  {
+    step: '03',
+    title: 'Entrega',
+    desc: 'Coordinamos el envío o recolección.',
+    face: 'bg-secondary text-ink',
+    back: 'bg-ink',
+    meta: 'text-ink/60',
+  },
+] as const
+
 export default async function ConfirmacionPage({ searchParams }: Props) {
   const { order } = await searchParams
 
@@ -18,10 +46,7 @@ export default async function ConfirmacionPage({ searchParams }: Props) {
       <div className="mb-6 flex justify-center">
         <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-primary-soft shadow-card">
           <CheckCircle size={40} className="text-primary" />
-          <span
-            className="absolute -top-1 -right-2 text-xl text-secondary"
-            aria-hidden
-          >
+          <span className="absolute -top-1 -right-2 text-xl text-secondary" aria-hidden>
             ✦
           </span>
         </div>
@@ -45,45 +70,26 @@ export default async function ConfirmacionPage({ searchParams }: Props) {
         coordinar el pago y la entrega.
       </p>
 
-      <div className="mt-10 grid grid-cols-1 gap-4 text-left sm:grid-cols-3">
-        {[
-          {
-            step: '1',
-            title: 'Pedido registrado',
-            desc: 'Tu pedido quedó guardado en nuestro sistema.',
-            done: true,
-          },
-          {
-            step: '2',
-            title: 'Te contactamos',
-            desc: 'Te escribimos por WhatsApp para confirmar.',
-            done: false,
-          },
-          {
-            step: '3',
-            title: 'Entrega',
-            desc: 'Coordinamos el envío o recolección.',
-            done: false,
-          },
-        ].map((s) => (
-          <div
+      <div className="mt-10 grid grid-cols-1 gap-5 text-left sm:grid-cols-3 sm:gap-4">
+        {STEPS.map((s) => (
+          <StoreSticker
             key={s.step}
-            className={[
-              'rounded-2xl p-5 shadow-card',
-              s.done ? 'bg-primary-soft/60' : 'bg-white',
-            ].join(' ')}
+            size="sm"
+            shape="soft"
+            back={s.back}
+            face={s.face}
+            faceClassName="min-h-[140px] p-5"
           >
-            <div
-              className={[
-                'mb-2 text-xs font-bold tracking-[0.18em] uppercase',
-                s.done ? 'text-primary' : 'text-on-surface-variant',
-              ].join(' ')}
+            <span
+              className={`font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-xs font-bold tracking-[0.22em] ${s.meta}`}
             >
               Paso {s.step}
+            </span>
+            <div className="mt-auto space-y-1.5 pt-6">
+              <p className="text-sm font-bold">{s.title}</p>
+              <p className={`text-xs leading-relaxed ${s.meta}`}>{s.desc}</p>
             </div>
-            <p className="text-sm font-semibold text-ink">{s.title}</p>
-            <p className="mt-1 text-xs leading-relaxed text-on-surface-variant">{s.desc}</p>
-          </div>
+          </StoreSticker>
         ))}
       </div>
 

@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { X, ShoppingBag, Minus, Plus, HelpCircle, Truck } from 'lucide-react'
 import { useCartStore } from '@/stores/cart-store'
 import { formatCurrency } from '@/lib/utils'
+import { StoreEmptyState } from '@/components/store/StoreEmptyState'
 
 interface CartDrawerProps {
   open: boolean
@@ -18,19 +19,35 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
   useEffect(() => {
     const { overflow, paddingRight } = document.body.style
+    const previousCompensation =
+      document.documentElement.style.getPropertyValue('--scrollbar-compensation')
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+
     if (open) {
       document.body.style.overflow = 'hidden'
+      // Compensa el ancho del scrollbar en body y en elementos fixed (p. ej. StoreHeader)
       if (scrollbarWidth > 0) {
-        document.body.style.paddingRight = `${scrollbarWidth}px`
+        const compensation = `${scrollbarWidth}px`
+        document.body.style.paddingRight = compensation
+        document.documentElement.style.setProperty('--scrollbar-compensation', compensation)
       }
     } else {
       document.body.style.overflow = ''
       document.body.style.paddingRight = ''
+      document.documentElement.style.removeProperty('--scrollbar-compensation')
     }
+
     return () => {
       document.body.style.overflow = overflow
       document.body.style.paddingRight = paddingRight
+      if (previousCompensation) {
+        document.documentElement.style.setProperty(
+          '--scrollbar-compensation',
+          previousCompensation,
+        )
+      } else {
+        document.documentElement.style.removeProperty('--scrollbar-compensation')
+      }
     }
   }, [open])
 
@@ -99,15 +116,16 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
 function CartEmptyState({ onClose }: { onClose: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-16 text-on-surface-variant">
-      <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-surface text-primary">
-        <ShoppingBag size={28} strokeWidth={1.5} />
-      </span>
-      <p className="text-sm font-medium">Tu carrito está vacío</p>
-      <button onClick={onClose} className="btn-store btn-store--primary">
-        Seguir comprando
-      </button>
-    </div>
+    <StoreEmptyState
+      icon={ShoppingBag}
+      title="Tu carrito está vacío"
+      description="Explora el catálogo y arma tu pedido cuando quieras."
+      href="/productos"
+      label="Seguir comprando"
+      tone="sand"
+      className="py-8"
+      onNavigate={onClose}
+    />
   )
 }
 

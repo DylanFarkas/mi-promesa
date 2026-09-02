@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import Link from 'next/link'
-import { ShoppingBag, ArrowLeft, Loader2, Truck, Send } from 'lucide-react'
+import { ShoppingBag, Loader2, Truck, Send } from 'lucide-react'
 import { useCartStore } from '@/stores/cart-store'
 import { formatCurrency } from '@/lib/utils'
+import { StoreEmptyState } from '@/components/store/StoreEmptyState'
 
 interface FormState {
   customerName: string
@@ -140,16 +140,15 @@ export function CheckoutForm() {
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-24 text-on-surface-variant">
-        <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-surface text-primary">
-          <ShoppingBag size={28} strokeWidth={1.5} />
-        </span>
-        <p className="text-base font-medium">Tu carrito está vacío</p>
-        <Link href="/marcas" className="btn-store btn-store--primary">
-          <ArrowLeft size={14} />
-          Explorar productos
-        </Link>
-      </div>
+      <StoreEmptyState
+        icon={ShoppingBag}
+        title="Tu carrito está vacío"
+        description="Agrega productos al carrito para continuar con tu pedido."
+        href="/productos"
+        label="Explorar productos"
+        tone="sand"
+        className="py-16"
+      />
     )
   }
 

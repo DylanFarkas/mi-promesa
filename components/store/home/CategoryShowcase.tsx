@@ -15,8 +15,18 @@ interface CategoryShowcaseProps {
 
 /** Tintes con personalidad distinta para las tarjetas secundarias. */
 const SIDE_TINTS = [
-  { bg: 'bg-mint', text: 'text-mint-deep', chip: 'bg-mint-deep text-white' },
-  { bg: 'bg-blush', text: 'text-accent', chip: 'bg-accent text-white' },
+  {
+    bg: 'bg-mint',
+    back: 'bg-mint-deep',
+    text: 'text-mint-deep',
+    chip: 'bg-mint-deep text-white',
+  },
+  {
+    bg: 'bg-blush',
+    back: 'bg-accent',
+    text: 'text-accent',
+    chip: 'bg-accent text-white',
+  },
 ] as const
 
 export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
@@ -99,43 +109,52 @@ export function CategoryShowcase({ categories }: CategoryShowcaseProps) {
           {side.map((cat, i) => {
             const tint = SIDE_TINTS[i % SIDE_TINTS.length]
             return (
-              <Link
+              <div
                 key={cat.id}
-                href={`/categorias/${cat.slug}`}
-                className={`group relative flex overflow-hidden rounded-4xl ${tint.bg} shadow-card transition-all duration-500 hover:-translate-y-1 hover:shadow-lift lg:col-span-2`}
+                className="group relative h-full lg:col-span-2"
               >
-                <div className="flex flex-1 flex-col justify-between gap-6 p-7">
-                  <span
-                    className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-sm ${tint.chip} transition-transform duration-300 group-hover:rotate-45`}
-                  >
-                    <ArrowUpRight size={15} aria-hidden />
-                  </span>
-                  <div>
-                    <h3
-                      className={`font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-2xl font-bold ${tint.text}`}
+                {/* Offset micro: misma altura que la face (h-full) para que no quede solapa */}
+                <span
+                  className={`store-sticker-back store-sticker-back--micro rounded-4xl ${tint.back}`}
+                  aria-hidden
+                />
+                <Link
+                  href={`/categorias/${cat.slug}`}
+                  className={`relative flex h-full min-h-40 overflow-hidden rounded-4xl ${tint.bg} shadow-card transition-all duration-500 group-hover:-translate-y-0.5 hover:shadow-lift`}
+                >
+                  <div className="flex flex-1 flex-col justify-between gap-6 p-7">
+                    <span
+                      className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-sm ${tint.chip} transition-transform duration-300 group-hover:rotate-45`}
                     >
-                      {cat.name}
-                    </h3>
-                    <p className="mt-1 text-sm font-medium text-ink/60">Ver productos</p>
-                  </div>
-                </div>
-
-                <div className="relative w-[42%] shrink-0 self-stretch overflow-hidden">
-                  {cat.imageUrl ? (
-                    <Image
-                      src={cat.imageUrl}
-                      alt=""
-                      fill
-                      className="rounded-l-[3rem] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                      sizes="(max-width: 1024px) 42vw, 320px"
-                    />
-                  ) : (
-                    <span className="absolute inset-0 flex items-center justify-center rounded-l-[3rem] bg-white/60 text-3xl font-bold text-ink/30">
-                      {cat.name.slice(0, 1)}
+                      <ArrowUpRight size={15} aria-hidden />
                     </span>
-                  )}
-                </div>
-              </Link>
+                    <div>
+                      <h3
+                        className={`font-[family-name:var(--font-store-display-face),system-ui,sans-serif] text-2xl font-bold ${tint.text}`}
+                      >
+                        {cat.name}
+                      </h3>
+                      <p className="mt-1 text-sm font-medium text-ink/60">Ver productos</p>
+                    </div>
+                  </div>
+
+                  <div className="relative w-[42%] shrink-0 self-stretch overflow-hidden">
+                    {cat.imageUrl ? (
+                      <Image
+                        src={cat.imageUrl}
+                        alt=""
+                        fill
+                        className="rounded-l-[3rem] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        sizes="(max-width: 1024px) 42vw, 320px"
+                      />
+                    ) : (
+                      <span className="absolute inset-0 flex items-center justify-center rounded-l-[3rem] bg-white/60 text-3xl font-bold text-ink/30">
+                        {cat.name.slice(0, 1)}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              </div>
             )
           })}
         </div>
